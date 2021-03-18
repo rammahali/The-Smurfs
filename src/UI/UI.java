@@ -20,12 +20,17 @@ public class UI {
             //Karakter:Gargamel,Kapi:A
             String currentLine = mapScanner.nextLine();
             if(currentLine.contains("Karakter") || currentLine.contains("karakter")){
-                String doorToken[] =currentLine.split(",Kapi:");
-                String characterToken[] = doorToken[0].split(":");
-                String enemyCharacter=  characterToken[1];
-                String enemyDoor = doorToken[1];
-                enemyData.add(enemyCharacter);
-                enemyData.add(enemyDoor);
+                // get the enemy's character :
+                if(currentLine.contains("Gargamel")|| currentLine.contains("gargamel"))
+                    enemyData.add("Gargamel");
+                else
+                    enemyData.add("Azman");
+
+                // get the enemy's door
+                // using "api" to ignore Kapi capitalaization
+                String doorToken[] = currentLine.split("api:");
+                String door = doorToken[1];
+                enemyData.add(door);
             }
 
         }
