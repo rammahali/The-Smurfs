@@ -1,9 +1,9 @@
 import javax.swing.*;
 
 public class Tile extends JButton {
-    boolean hasGold;
-    boolean hasMushroom;
-    boolean isWall;
+   private boolean hasGold;
+   private boolean hasMushroom;
+   private boolean isWall;
 
     public Tile() {}
 
