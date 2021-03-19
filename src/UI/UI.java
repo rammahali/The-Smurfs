@@ -1,18 +1,26 @@
 package UI;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.awt.GridLayout;
+import javax.swing.*;
 
-public class UI {
+public class UI extends  JFrame{
+     JPanel board = new JPanel();
+    public UI(String playerCharacter) throws FileNotFoundException {
 
-    public UI() throws FileNotFoundException {
-        //Testing parseMap
-        parseMap("src/harita.txt");
+       this.initialize(playerCharacter);
     }
 
+   private void  initialize(String playerCharacter) throws FileNotFoundException {
+      instantiate(playerCharacter,parseMap("src/Core/harita.txt"));
+   }
+    private void instantiate(String playerCharacter,ArrayList<String> enemyData){
+
+    }
     private ArrayList<String> parseMap(String mapPath) throws FileNotFoundException {
+
         ArrayList<String> enemyData= new ArrayList<>();
         File map = new File(mapPath);
         Scanner mapScanner = new Scanner(map);

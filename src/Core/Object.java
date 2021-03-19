@@ -1,3 +1,5 @@
+package Core;
+
 public abstract class Object {
     private String type;
     private int points;
