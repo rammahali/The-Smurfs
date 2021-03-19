@@ -95,14 +95,15 @@ public class PlayerSelection extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }
 
     private void onLazySmurfSelected(java.awt.event.ActionEvent evt) {
-        // TODO add implement lazy smurf selection
+        // TODO implement lazy smurf selection
     }
 
     private void onSmartSmurfSelected(java.awt.event.ActionEvent evt) {
-        // TODO add implement smart smurf selection
+        // TODO implement smart smurf selection
     }
 
 }
