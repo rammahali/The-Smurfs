@@ -2,6 +2,7 @@ package UI;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.FileNotFoundException;
 
 public class PlayerSelection extends javax.swing.JFrame {
 
@@ -99,11 +100,21 @@ public class PlayerSelection extends javax.swing.JFrame {
     }
 
     private void onLazySmurfSelected(java.awt.event.ActionEvent evt) {
-        // TODO implement lazy smurf selection
+        try{
+             new GameBoard("Lazy Smurf");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        this.dispose();
     }
 
     private void onSmartSmurfSelected(java.awt.event.ActionEvent evt) {
-        // TODO implement smart smurf selection
+        try{
+            new GameBoard("Smart Smurf");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        this.dispose();
     }
 
 }

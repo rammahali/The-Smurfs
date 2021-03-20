@@ -29,7 +29,7 @@ public class Tile extends JButton {
         return isWall;
     }
 
-    public void setWall(boolean wall) {
+    public void setIsWall(boolean wall) {
         isWall = wall;
     }
 }
