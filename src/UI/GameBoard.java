@@ -26,39 +26,75 @@ class GameBoardPanel extends JPanel {
     private LazySmurf lazySmurf = new LazySmurf();
     private SmartSmurf smartSmurf = new SmartSmurf();
     private Location Location;
+    private ImageIcon lazySmurfICon = new ImageIcon(new ImageIcon("src/Images/lazySmurfChar.png").getImage());
+    private ImageIcon smartSmurfICon = new ImageIcon(new ImageIcon("src/Images/smartSmurfChar.png").getImage());
+    private String currentPlayer;
+
 
     public GameBoardPanel(String playerCharacter) throws FileNotFoundException {
         initialize(playerCharacter);
     }
 
 
-
-    private void  initialize(String playerCharacter) throws FileNotFoundException {
+    private void initialize(String playerCharacter) throws FileNotFoundException {
         populateBoard();
-        instantiate(playerCharacter,parseMap("src/Core/harita.txt"));
+        instantiate(playerCharacter, parseMap("src/Core/harita.txt"));
     }
 
 
+    private void instantiate(String playerCharacter, ArrayList<String> enemyData) {
+        // set the current player to the selected character
+        currentPlayer = playerCharacter;
 
-    private void instantiate(String playerCharacter,ArrayList<String> enemyData){
+        // instantiate players
+        if (playerCharacter.equals("Lazy Smurf"))
+            instantiateLazySmurf();
+        else
+            instantiateSmartSmurf();
 
-        if(playerCharacter.equals("Lazy Smurf")){
-           instantiateLazySmurf();
+        // instantiate enemies
+        for (int i = 0; i < enemyData.size()-1; i++)
+
+            instantiateEnemyAtDoor(enemyData.get(i), enemyData.get(i + 1));
+    }
+
+    private void instantiateLazySmurf() {
+        tile[5][6].setIcon(lazySmurfICon);
+        tile[5][6].setEnabled(true);
+    }
+
+    private void instantiateSmartSmurf() {
+        tile[5][6].setIcon(smartSmurfICon);
+        tile[5][6].setEnabled(true);
+    }
+
+    private void instantiateEnemyAtDoor(String enemy, String door) {
+        switch (door) {
+            case "A":
+                tile[0][3].setText("");
+                tile[0][3].setEnabled(true);
+                tile[0][3].setBackground(Color.white);
+                tile[0][3].setIcon(new ImageIcon(new ImageIcon("src/Images/"+enemy+".png").getImage()));
+                break;
+            case "B":
+                tile[0][10].setText("");
+                tile[0][10].setEnabled(true);
+                tile[0][10].setBackground(Color.white);
+                tile[0][10].setIcon(new ImageIcon(new ImageIcon("src/Images/"+enemy+".png").getImage()));
+                break;
+            case "C":
+                tile[5][0].setText("");
+                tile[5][0].setEnabled(true);
+                tile[5][0].setBackground(Color.white);
+                tile[5][0].setIcon(new ImageIcon(new ImageIcon("src/Images/"+enemy+".png").getImage()));
+                break;
+            case "D":
+                tile[10][3].setText("");
+                tile[10][3].setEnabled(true);
+                tile[10][3].setBackground(Color.white);
+                tile[10][3].setIcon(new ImageIcon(new ImageIcon("src/Images/"+enemy+".png").getImage()));
+                break;
         }
-
-        if(playerCharacter.equals("Smart Smurf")){
-         instantiateLazySmurf();
-        }
-
-        //TODO: instantiate enemies
-    }
-
-    private void instantiateLazySmurf(){
-     //TODO: implement lazy Smurf instantiation
-    }
-
-    private void instantiateSmartSmurf(){
-        //TODO: implement smart Smurf instantiation
     }
 
     private void populateBoard() {
@@ -126,13 +162,13 @@ class GameBoardPanel extends JPanel {
         }
 
         tile[0][3].setText("A");
-        tile[0][3].setBackground(Color.orange);
+        tile[0][3].setBackground(Color.DARK_GRAY);
         tile[0][10].setText("B");
-        tile[0][10].setBackground(Color.orange);
+        tile[0][10].setBackground(Color.DARK_GRAY);
         tile[5][0].setText("C");
-        tile[5][0].setBackground(Color.orange);
+        tile[5][0].setBackground(Color.DARK_GRAY);
         tile[10][3].setText("D");
-        tile[10][3].setBackground(Color.orange);
+        tile[10][3].setBackground(Color.DARK_GRAY);
 
         //testing parsing output :
         System.out.print(enemyData);
