@@ -4,6 +4,10 @@ import Core.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -21,22 +25,27 @@ public class GameBoard extends JFrame {
 }
 
 
-class GameBoardPanel extends JPanel {
+class GameBoardPanel extends JPanel implements ActionListener {
     private Tile[][] tile = new Tile[11][13];
     private LazySmurf lazySmurf = new LazySmurf();
     private SmartSmurf smartSmurf = new SmartSmurf();
-    private Location Location;
-    private ImageIcon lazySmurfICon = new ImageIcon(new ImageIcon("src/Images/lazySmurfChar.png").getImage());
-    private ImageIcon smartSmurfICon = new ImageIcon(new ImageIcon("src/Images/smartSmurfChar.png").getImage());
     private String currentPlayer;
+    private ImageIcon lazySmurfICon = new ImageIcon(new ImageIcon("src/Images/lazySmurf.png").getImage());
+    private ImageIcon smartSmurfICon = new ImageIcon(new ImageIcon("src/Images/smartSmurf.png").getImage());
+    private int playerX=5 ,playerY=6;
 
 
     public GameBoardPanel(String playerCharacter) throws FileNotFoundException {
+        //TODO: Fix smart smurf wall bug
+        // Fix wall boundaries out of limit bug
+
         initialize(playerCharacter);
     }
 
 
     private void initialize(String playerCharacter) throws FileNotFoundException {
+        this.setFocusable(true);
+        this.addKeyListener(new MyKeyAdapter());
         populateBoard();
         instantiate(playerCharacter, parseMap("src/Core/harita.txt"));
     }
@@ -163,15 +172,127 @@ class GameBoardPanel extends JPanel {
 
         tile[0][3].setText("A");
         tile[0][3].setBackground(Color.DARK_GRAY);
+        tile[0][3].setIsWall(true);
         tile[0][10].setText("B");
         tile[0][10].setBackground(Color.DARK_GRAY);
+        tile[0][10].setIsWall(true);
         tile[5][0].setText("C");
         tile[5][0].setBackground(Color.DARK_GRAY);
+        tile[5][0].setIsWall(true);
         tile[10][3].setText("D");
         tile[10][3].setBackground(Color.DARK_GRAY);
-
+        tile[10][3].setIsWall(true);
         //testing parsing output :
         System.out.print(enemyData);
         return enemyData;
     }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+    }
+
+    private void movePlayerUp(Player playerCharacter){
+       int steps = playerCharacter.getSteps();
+       int x = playerX;
+       int y = playerY;
+       Tile nextTile  = tile[x-steps][y];
+       Tile currentTile=tile[x][y];
+       if(!nextTile.isWall()){
+           currentTile.setIcon(null);
+           currentTile.setEnabled(false);
+           nextTile.setIcon(new ImageIcon(new ImageIcon("src/Images/"+playerCharacter.getName()+".png").getImage()));
+           nextTile.setEnabled(true);
+           playerX=playerX-steps;
+       }
+    }
+
+    private void movePlayerDown(Player playerCharacter){
+        int steps = playerCharacter.getSteps();
+        int x = playerX;
+        int y = playerY;
+        Tile nextTile  = tile[x+steps][y];
+        Tile currentTile=tile[x][y];
+        if(!nextTile.isWall()){
+            currentTile.setIcon(null);
+            currentTile.setEnabled(false);
+            nextTile.setIcon(new ImageIcon(new ImageIcon("src/Images/"+playerCharacter.getName()+".png").getImage()));
+            nextTile.setEnabled(true);
+            playerX=playerX+steps;
+        }
+    }
+
+    private void movePlayerRight(Player playerCharacter){
+        int steps = playerCharacter.getSteps();
+        int x = playerX;
+        int y = playerY;
+        Tile nextTile  = tile[x][y+steps];
+        Tile currentTile=tile[x][y];
+
+        if(!nextTile.isWall() ){
+            currentTile.setIcon(null);
+            currentTile.setEnabled(false);
+            nextTile.setIcon(new ImageIcon(new ImageIcon("src/Images/"+playerCharacter.getName()+".png").getImage()));
+            nextTile.setEnabled(true);
+            playerY=playerY+steps;
+        }
+    }
+
+    private void movePlayerLeft(Player playerCharacter){
+        int steps = playerCharacter.getSteps();
+        int x = playerX;
+        int y = playerY;
+        Tile nextTile  = tile[x][y-steps];
+        Tile currentTile=tile[x][y];
+        if(!nextTile.isWall()){
+            currentTile.setIcon(null);
+            currentTile.setEnabled(false);
+            nextTile.setIcon(new ImageIcon(new ImageIcon("src/Images/"+playerCharacter.getName()+".png").getImage()));
+            nextTile.setEnabled(true);
+            playerY=playerY-steps;
+        }
+    }
+
+
+    public class MyKeyAdapter extends KeyAdapter {
+
+        @Override
+        public void keyPressed(KeyEvent e)
+        {
+
+            switch (e.getKeyCode())
+            {
+                case KeyEvent.VK_LEFT:
+                    if (currentPlayer.equals("Lazy Smurf"))
+                        movePlayerLeft(lazySmurf);
+                     else
+                        movePlayerLeft(smartSmurf);
+
+
+                    break;
+                case KeyEvent.VK_RIGHT:
+                    if (currentPlayer.equals("Lazy Smurf"))
+                        movePlayerRight(lazySmurf);
+                    else
+                        movePlayerRight(smartSmurf);
+                    break;
+
+                case KeyEvent.VK_UP:
+                    if (currentPlayer.equals("Lazy Smurf"))
+                        movePlayerUp(lazySmurf);
+                    else
+                        movePlayerUp(smartSmurf);
+                    break;
+                case KeyEvent.VK_DOWN:
+                    if (currentPlayer.equals("Lazy Smurf"))
+                        movePlayerDown(lazySmurf);
+                    else
+                        movePlayerDown(smartSmurf);
+                    break;
+
+            }
+        }
+
+    }
+
 }
