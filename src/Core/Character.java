@@ -1,6 +1,10 @@
 package Core;
 
 import UI.GameBoard;
+import UI.GameBoardPanel;
+
+import java.util.LinkedList;
+import java.util.Queue;
 
 import java.util.ArrayList;
 
@@ -54,12 +58,30 @@ public abstract class Character {
         this.location = location;
     }
 
-    public ArrayList<Tile> getShortestPath(Tile[][] board, Location destination) {
+    public ArrayList<Tile> getShortestPath(GameBoardPanel boardPanel, Location destination) {
         // Retrieve start and end tiles
-        Tile start = board[this.location.getX()][this.location.getY()];
-        Tile end = board[destination.getX()][destination.getY()];
+        Tile start = boardPanel.getTile(this.location);
+        Tile end = boardPanel.getTile(destination);
+
+        Tile[][] board = boardPanel.getBoard();
+
+        start.setDistance(0);
+
+        Queue<Tile> unvisited = new LinkedList<>();
         ArrayList<Tile> shortestPath = new ArrayList<>();
 
+
+        // Set all distances to infinity
+        for (Tile[] row : board) {
+            for (Tile tile : row) {
+                tile.setDistance(-1);
+                unvisited.add(tile);
+            }
+        }
+
+        while (!unvisited.isEmpty()) {
+            // TODO: Dijkstra algorithm works here
+        }
 
 
         // TODO: Check all adjacent tiles
