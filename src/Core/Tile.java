@@ -3,11 +3,13 @@ package Core;
 import javax.swing.*;
 
 public class Tile extends JButton {
-   private boolean hasGold;
-   private boolean hasMushroom;
-   private boolean isWall;
+    private boolean hasGold;
+    private boolean hasMushroom;
+    private boolean isWall;
+    private int distance = -1; // -1 = infinity
 
-    public Tile() {}
+    public Tile() {
+    }
 
     public boolean HasGold() {
         return hasGold;
@@ -31,5 +33,13 @@ public class Tile extends JButton {
 
     public void setIsWall(boolean wall) {
         isWall = wall;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
+    public void setDistance(int distance) {
+        this.distance = distance;
     }
 }
