@@ -39,11 +39,12 @@ class GameBoardPanel extends JPanel implements ActionListener {
     private ImageIcon mushroomIcon = new ImageIcon(new ImageIcon("src/Images/mushroom.png").getImage());
     private int playerX = 5, playerY = 6;
     private ArrayList<Tile> objectTiles = new ArrayList<>();
-   private Timer objectsTimer;
+    private Timer objectsTimer;
 
 
     public GameBoardPanel(String playerCharacter) throws FileNotFoundException {
         //TODO: Fix smart smurf wall bug
+        // Fix smart smurf going over objects bug
         // Fix wall boundaries out of limit bug
 
         initialize(playerCharacter);
@@ -199,26 +200,26 @@ class GameBoardPanel extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-       hideObjects();
+        hideObjects();
     }
 
     private void instantiateRandomObjects() {
-         showRandomGold();
-         showRandomMushroom();
+        showRandomGold();
+        showRandomMushroom();
     }
 
     private void showRandomGold() {
         Random random = new Random();
-        int x ;
-        int y ;
-        int goldCount=5;
-        int drawnGold=0;
+        int x;
+        int y;
+        int goldCount = 5;
+        int drawnGold = 0;
         Tile playerTile = tile[5][6];
-        while (drawnGold<goldCount){
+        while (drawnGold < goldCount) {
             x = random.nextInt(11);
             y = random.nextInt(13);
 
-            if(!tile[x][y].isWall() && !objectTiles.contains(tile[x][y]) && tile[x][y]!=playerTile){
+            if (!tile[x][y].isWall() && !objectTiles.contains(tile[x][y]) && tile[x][y] != playerTile) {
                 tile[x][y].setHasGold(true);
                 tile[x][y].setIcon(goldIcon);
                 tile[x][y].setEnabled(true);
@@ -230,16 +231,16 @@ class GameBoardPanel extends JPanel implements ActionListener {
 
     private void showRandomMushroom() {
         Random random = new Random();
-        int x ;
-        int y ;
-        int MushroomCount=random.nextInt(20);
-        int drawnMushroom=0;
+        int x;
+        int y;
+        int MushroomCount = random.nextInt(20);
+        int drawnMushroom = 0;
         Tile playerTile = tile[5][6];
-        while (drawnMushroom<MushroomCount){
+        while (drawnMushroom < MushroomCount) {
             x = random.nextInt(11);
             y = random.nextInt(13);
 
-            if(!tile[x][y].isWall() && !objectTiles.contains(tile[x][y]) && tile[x][y]!=playerTile){
+            if (!tile[x][y].isWall() && !objectTiles.contains(tile[x][y]) && tile[x][y] != playerTile) {
                 tile[x][y].setHasMushroom(true);
                 tile[x][y].setIcon(mushroomIcon);
                 tile[x][y].setEnabled(true);
@@ -249,20 +250,18 @@ class GameBoardPanel extends JPanel implements ActionListener {
         }
     }
 
-    private void startTimer(){
-        objectsTimer=new Timer(5000,this);
+    private void startTimer() {
+        objectsTimer = new Timer(5000, this);
         objectsTimer.setRepeats(false);
         objectsTimer.start();
     }
 
-    private void hideObjects(){
-        for (int i=0;i<objectTiles.size();i++){
-            if(objectTiles.get(i).HasGold()){
+    private void hideObjects() {
+        for (int i = 0; i < objectTiles.size(); i++) {
+            if (objectTiles.get(i).HasGold()) {
                 objectTiles.get(i).setHasGold(false);
                 objectTiles.get(i).setIcon(null);
-            }
-
-            else{
+            } else {
                 objectTiles.get(i).setHasMushroom(false);
                 objectTiles.get(i).setIcon(null);
             }
