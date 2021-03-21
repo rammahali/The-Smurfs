@@ -201,6 +201,11 @@ class GameBoardPanel extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         hideObjects();
+        if(currentPlayer.equals("Lazy Smurf"))
+            tile[playerX][playerY].setIcon(lazySmurfICon);
+        else
+            tile[playerX][playerY].setIcon(smartSmurfICon);
+
     }
 
     private void instantiateRandomObjects() {
