@@ -18,8 +18,6 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     private Tile[][] board = new Tile[11][13];
     private JLabel pointsLabel = new JLabel();
     private int points = 0;
-    private ImageIcon goldIcon = new ImageIcon(new ImageIcon("src/Images/gold.png").getImage());
-    private ImageIcon mushroomIcon = new ImageIcon(new ImageIcon("src/Images/mushroom.png").getImage());
     private ArrayList<Tile> objectTiles = new ArrayList<>();
     private ArrayList<Enemy> enemies = new ArrayList<>();
     private Timer objectsTimer;
@@ -58,7 +56,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     private void instantiatePlayerCharacter(Player playerCharacter) {
         currentPlayer= playerCharacter;
         currentPlayer.setLocation(new Location(5,6));
-        board[5][6].setIcon(new ImageIcon(new ImageIcon("src/Images/"+playerCharacter.getName()+".png").getImage()));
+        board[5][6].setIcon(getIcon(currentPlayer.getName()));
         board[5][6].setEnabled(true);
 
     }
@@ -70,7 +68,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 board[0][3].setText("");
                 board[0][3].setEnabled(true);
                 board[0][3].setBackground(Color.white);
-                board[0][3].setIcon(new ImageIcon(new ImageIcon("src/Images/" + enemy + ".png").getImage()));
+                board[0][3].setIcon(getIcon(enemy));
                 if(enemy.equals("Gargamel")){
                     Gargamel gargamel = new Gargamel();
                     gargamel.setLocation(new Location(0,3));
@@ -87,7 +85,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 board[0][10].setText("");
                 board[0][10].setEnabled(true);
                 board[0][10].setBackground(Color.white);
-                board[0][10].setIcon(new ImageIcon(new ImageIcon("src/Images/" + enemy + ".png").getImage()));
+                board[0][10].setIcon(getIcon(enemy));
                 if(enemy.equals("Gargamel")){
                     Gargamel gargamel = new Gargamel();
                     gargamel.setLocation(new Location(0,10));
@@ -103,7 +101,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 board[5][0].setText("");
                 board[5][0].setEnabled(true);
                 board[5][0].setBackground(Color.white);
-                board[5][0].setIcon(new ImageIcon(new ImageIcon("src/Images/" + enemy + ".png").getImage()));
+                board[5][0].setIcon(getIcon(enemy));
 
                 if(enemy.equals("Gargamel")){
                     Gargamel gargamel = new Gargamel();
@@ -120,7 +118,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 board[10][3].setText("");
                 board[10][3].setEnabled(true);
                 board[10][3].setBackground(Color.white);
-                board[10][3].setIcon(new ImageIcon(new ImageIcon("src/Images/" + enemy + ".png").getImage()));
+                board[10][3].setIcon(getIcon(enemy));
 
                 if(enemy.equals("Gargamel")){
                     Gargamel gargamel = new Gargamel();
@@ -220,12 +218,17 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         return enemyData;
     }
 
+    private ImageIcon getIcon(String iconName){
+
+        return new ImageIcon(new ImageIcon("src/Images/"+iconName+".png").getImage());
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         hideObjects();
         int x =  currentPlayer.getLocation().getX();
         int y = currentPlayer.getLocation().getY();
-        board[x][y].setIcon(new ImageIcon(new ImageIcon("src/Images/"+currentPlayer.getName()+".png").getImage()));
+        board[x][y].setIcon(getIcon(currentPlayer.getName()));
         board[x][y].setEnabled(true);
     }
 
@@ -247,7 +250,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
             if (!board[x][y].isWall() && !objectTiles.contains(board[x][y]) && board[x][y] != playerTile) {
                 board[x][y].setHasGold(true);
-                board[x][y].setIcon(goldIcon);
+                board[x][y].setIcon(getIcon("gold"));
                 board[x][y].setEnabled(true);
                 objectTiles.add(board[x][y]);
                 drawnGold++;
@@ -268,7 +271,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
             if (!board[x][y].isWall() && !objectTiles.contains(board[x][y]) && board[x][y] != playerTile) {
                 board[x][y].setHasMushroom(true);
-                board[x][y].setIcon(mushroomIcon);
+                board[x][y].setIcon(getIcon("mushroom"));
                 board[x][y].setEnabled(true);
                 objectTiles.add(board[x][y]);
                 drawnMushroom++;
@@ -303,7 +306,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         if (!nextTile.isWall()) {
             currentTile.setIcon(null);
             currentTile.setEnabled(false);
-            nextTile.setIcon(new ImageIcon(new ImageIcon("src/Images/" + playerCharacter.getName() + ".png").getImage()));
+            nextTile.setIcon(getIcon(currentPlayer.getName()));
             nextTile.setEnabled(true);
             currentPlayer.getLocation().setX(x-steps);
         }
@@ -318,7 +321,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         if (!nextTile.isWall()) {
             currentTile.setIcon(null);
             currentTile.setEnabled(false);
-            nextTile.setIcon(new ImageIcon(new ImageIcon("src/Images/" + playerCharacter.getName() + ".png").getImage()));
+            nextTile.setIcon(getIcon(currentPlayer.getName()));
             nextTile.setEnabled(true);
             currentPlayer.getLocation().setX(x+steps);
         }
@@ -334,7 +337,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         if (!nextTile.isWall()) {
             currentTile.setIcon(null);
             currentTile.setEnabled(false);
-            nextTile.setIcon(new ImageIcon(new ImageIcon("src/Images/" + playerCharacter.getName() + ".png").getImage()));
+            nextTile.setIcon(getIcon(currentPlayer.getName()));
             nextTile.setEnabled(true);
             currentPlayer.getLocation().setY(y+steps);
         }
@@ -349,7 +352,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         if (!nextTile.isWall()) {
             currentTile.setIcon(null);
             currentTile.setEnabled(false);
-            nextTile.setIcon(new ImageIcon(new ImageIcon("src/Images/" + playerCharacter.getName() + ".png").getImage()));
+            nextTile.setIcon(getIcon(currentPlayer.getName()));
             nextTile.setEnabled(true);
             currentPlayer.getLocation().setY(y-steps);
         }
