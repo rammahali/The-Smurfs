@@ -20,15 +20,16 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     private int points = 0;
     private ArrayList<Tile> objectTiles = new ArrayList<>();
     private ArrayList<Enemy> enemies = new ArrayList<>();
-    private Timer objectsTimer;
+    private Timer goldTimer;
+    private Timer mushroomTimer;
     private Player currentPlayer;
 
     public GameBoardPanel(Player playerCharacter) throws FileNotFoundException {
-        //TODO: Fix smart smurf wall bug
-        // Fix smart smurf going over objects bug
+        //TODO:
         // Fix wall boundaries out of limit bug
 
         initialize(playerCharacter);
+
     }
 
 
@@ -38,14 +39,14 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         populateBoard();
         instantiate(playerCharacter, parseMap("src/Core/harita.txt"));
         instantiateRandomObjects();
-        startTimer();
+        startGoldTimer();
     }
 
 
     private void instantiate(Player playerCharacter, ArrayList<String> enemyData) {
 
         // instantiate player
-         instantiatePlayerCharacter(playerCharacter);
+        instantiatePlayerCharacter(playerCharacter);
 
         // instantiate enemies
         for (int i = 0; i < enemyData.size() - 1; i++)
@@ -54,8 +55,8 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     }
 
     private void instantiatePlayerCharacter(Player playerCharacter) {
-        currentPlayer= playerCharacter;
-        currentPlayer.setLocation(new Location(5,6));
+        currentPlayer = playerCharacter;
+        currentPlayer.setLocation(new Location(5, 6));
         board[5][6].setIcon(getIcon(currentPlayer.getName()));
         board[5][6].setEnabled(true);
 
@@ -69,14 +70,13 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 board[0][3].setEnabled(true);
                 board[0][3].setBackground(Color.white);
                 board[0][3].setIcon(getIcon(enemy));
-                if(enemy.equals("Gargamel")){
+                if (enemy.equals("Gargamel")) {
                     Gargamel gargamel = new Gargamel();
-                    gargamel.setLocation(new Location(0,3));
+                    gargamel.setLocation(new Location(0, 3));
                     enemies.add(gargamel);
-                }
-                else{
+                } else {
                     Azman azman = new Azman();
-                    azman.setLocation(new Location(0,3));
+                    azman.setLocation(new Location(0, 3));
                     enemies.add(azman);
                 }
 
@@ -86,14 +86,13 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 board[0][10].setEnabled(true);
                 board[0][10].setBackground(Color.white);
                 board[0][10].setIcon(getIcon(enemy));
-                if(enemy.equals("Gargamel")){
+                if (enemy.equals("Gargamel")) {
                     Gargamel gargamel = new Gargamel();
-                    gargamel.setLocation(new Location(0,10));
+                    gargamel.setLocation(new Location(0, 10));
                     enemies.add(gargamel);
-                }
-                else{
+                } else {
                     Azman azman = new Azman();
-                    azman.setLocation(new Location(0,10));
+                    azman.setLocation(new Location(0, 10));
                     enemies.add(azman);
                 }
                 break;
@@ -103,14 +102,13 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 board[5][0].setBackground(Color.white);
                 board[5][0].setIcon(getIcon(enemy));
 
-                if(enemy.equals("Gargamel")){
+                if (enemy.equals("Gargamel")) {
                     Gargamel gargamel = new Gargamel();
-                    gargamel.setLocation(new Location(5,0));
+                    gargamel.setLocation(new Location(5, 0));
                     enemies.add(gargamel);
-                }
-                else{
+                } else {
                     Azman azman = new Azman();
-                    azman.setLocation(new Location(5,0));
+                    azman.setLocation(new Location(5, 0));
                     enemies.add(azman);
                 }
                 break;
@@ -120,14 +118,13 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 board[10][3].setBackground(Color.white);
                 board[10][3].setIcon(getIcon(enemy));
 
-                if(enemy.equals("Gargamel")){
+                if (enemy.equals("Gargamel")) {
                     Gargamel gargamel = new Gargamel();
-                    gargamel.setLocation(new Location(10,3));
+                    gargamel.setLocation(new Location(10, 3));
                     enemies.add(gargamel);
-                }
-                else{
+                } else {
                     Azman azman = new Azman();
-                    azman.setLocation(new Location(10,3));
+                    azman.setLocation(new Location(10, 3));
                     enemies.add(azman);
                 }
                 break;
@@ -218,18 +215,17 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         return enemyData;
     }
 
-    private ImageIcon getIcon(String iconName){
+    private ImageIcon getIcon(String iconName) {
 
-        return new ImageIcon(new ImageIcon("src/Images/"+iconName+".png").getImage());
+        return new ImageIcon(new ImageIcon("src/Images/" + iconName + ".png").getImage());
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        hideObjects();
-        int x =  currentPlayer.getLocation().getX();
-        int y = currentPlayer.getLocation().getY();
-        board[x][y].setIcon(getIcon(currentPlayer.getName()));
-        board[x][y].setEnabled(true);
+        //  mushrooms should be hiden 2 sec after gold.
+
+        hideGold(); // when the gold timer reach the limit (5 sec) gold will be hidden
+        startMushroomTimer(); // then it will trigger the mushroom timer which will last only for 2 sec after gold timer ends.
     }
 
     private void instantiateRandomObjects() {
@@ -279,102 +275,125 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         }
     }
 
-    private void startTimer() {
-        objectsTimer = new Timer(5000, this);
-        objectsTimer.setRepeats(false);
-        objectsTimer.start();
+    private void startGoldTimer() {
+        goldTimer = new Timer(5000, this);
+        goldTimer.setRepeats(false);
+        goldTimer.start();
     }
 
-    private void hideObjects() {
+    private void startMushroomTimer() {
+        mushroomTimer = new Timer(2000, e -> hideMushroom());
+        mushroomTimer.setRepeats(false);
+        mushroomTimer.start();
+    }
+
+    private void hideGold() {
         for (Tile objectTile : objectTiles) {
             if (objectTile.HasGold()) {
                 objectTile.setHasGold(false);
                 objectTile.setEnabled(false);
                 objectTile.setIcon(null);
-            } else {
+            }
+        }
+        showPlayer();
+    }
+
+    private void hideMushroom() {
+        for (Tile objectTile : objectTiles) {
+            if (objectTile.HasMushroom()) {
                 objectTile.setHasMushroom(false);
                 objectTile.setEnabled(false);
                 objectTile.setIcon(null);
             }
         }
+        showPlayer();
+    }
+
+    // when hiding objects player icon will be hiden if the player is standing in an object tile , this method will be called in such
+    // cases to repaint player's icon.
+    private void showPlayer() {
+        int x = currentPlayer.getLocation().getX();
+        int y = currentPlayer.getLocation().getY();
+        board[x][y].setIcon(getIcon(currentPlayer.getName()));
+        board[x][y].setEnabled(true);
     }
 
     private void movePlayerUp() {
         int steps = currentPlayer.getSteps();
-         int x,y;
-         Tile nextTile,currentTile;
+        int x, y;
+        Tile nextTile, currentTile;
 
-           for(int i=0;i<steps;i++){
-               x = currentPlayer.getLocation().getX();
-               y = currentPlayer.getLocation().getY();
-               currentTile = board[x][y];
-               nextTile = board[x - 1][y];
-               if(!nextTile.isWall()){
-                   currentTile.setIcon(null);
-                   currentTile.setEnabled(false);
-                   nextTile.setIcon(getIcon(currentPlayer.getName()));
-                   nextTile.setEnabled(true);
-                   currentPlayer.getLocation().setX(x-1);
-               }
-           }
-    }
-
-    private void movePlayerDown() {
-        int steps = currentPlayer.getSteps();
-        int x,y;
-        Tile nextTile,currentTile;
-
-        for(int i=0;i<steps;i++){
+        for (int i = 0; i < steps; i++) {
             x = currentPlayer.getLocation().getX();
             y = currentPlayer.getLocation().getY();
             currentTile = board[x][y];
-            nextTile = board[x + 1][y];
-            if(!nextTile.isWall()){
+            nextTile = board[x - 1][y];
+            if (!nextTile.isWall()) {
                 currentTile.setIcon(null);
                 currentTile.setEnabled(false);
                 nextTile.setIcon(getIcon(currentPlayer.getName()));
                 nextTile.setEnabled(true);
-                currentPlayer.getLocation().setX(x+1);
+                currentPlayer.getLocation().setX(x - 1);
+            }
+        }
+    }
+
+    private void movePlayerDown() {
+        int steps = currentPlayer.getSteps();
+        int x, y;
+        Tile nextTile, currentTile;
+
+        for (int i = 0; i < steps; i++) {
+            x = currentPlayer.getLocation().getX();
+            y = currentPlayer.getLocation().getY();
+            currentTile = board[x][y];
+            nextTile = board[x + 1][y];
+            if (!nextTile.isWall()) {
+                currentTile.setIcon(null);
+                currentTile.setEnabled(false);
+                nextTile.setIcon(getIcon(currentPlayer.getName()));
+                nextTile.setEnabled(true);
+                currentPlayer.getLocation().setX(x + 1);
             }
         }
     }
 
     private void movePlayerRight() {
         int steps = currentPlayer.getSteps();
-        int x,y;
-        Tile nextTile,currentTile;
+        int x, y;
+        Tile nextTile, currentTile;
 
-        for(int i=0;i<steps;i++){
+        for (int i = 0; i < steps; i++) {
             x = currentPlayer.getLocation().getX();
             y = currentPlayer.getLocation().getY();
             currentTile = board[x][y];
-            nextTile = board[x][y+1];
-            if(!nextTile.isWall()){
+            nextTile = board[x][y + 1];
+            if (!nextTile.isWall()) {
                 currentTile.setIcon(null);
                 currentTile.setEnabled(false);
                 nextTile.setIcon(getIcon(currentPlayer.getName()));
                 nextTile.setEnabled(true);
-                currentPlayer.getLocation().setY(y+1);
+                currentPlayer.getLocation().setY(y + 1);
             }
         }
     }
 
     private void movePlayerLeft() {
         int steps = currentPlayer.getSteps();
-        int x,y;
-        Tile nextTile,currentTile;
+        int x, y;
+        Tile nextTile, currentTile;
 
-        for(int i=0;i<steps;i++){
+        for (int i = 0; i < steps; i++) {
             x = currentPlayer.getLocation().getX();
             y = currentPlayer.getLocation().getY();
             currentTile = board[x][y];
-            nextTile = board[x][y-1];
-            if(!nextTile.isWall()){
+            nextTile = board[x][y - 1];
+            if (!nextTile.isWall()) {
                 currentTile.setIcon(null);
                 currentTile.setEnabled(false);
                 nextTile.setIcon(getIcon(currentPlayer.getName()));
                 nextTile.setEnabled(true);
-                currentPlayer.getLocation().setY(y-1);
+                currentPlayer.getLocation().setY(y - 1);
             }
         }
     }
@@ -399,7 +418,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_LEFT:
-                   movePlayerLeft();
+                    movePlayerLeft();
                     break;
                 case KeyEvent.VK_RIGHT:
                     movePlayerRight();
