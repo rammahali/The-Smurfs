@@ -301,62 +301,81 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
     private void movePlayerUp() {
         int steps = currentPlayer.getSteps();
-        int x = currentPlayer.getLocation().getX();
-        int y = currentPlayer.getLocation().getY();
-        Tile nextTile = board[x - steps][y];
-        Tile currentTile = board[x][y];
-        if (!nextTile.isWall()) {
-            currentTile.setIcon(null);
-            currentTile.setEnabled(false);
-            nextTile.setIcon(getIcon(currentPlayer.getName()));
-            nextTile.setEnabled(true);
-            currentPlayer.getLocation().setX(x-steps);
-        }
+         int x,y;
+         Tile nextTile,currentTile;
+
+           for(int i=0;i<steps;i++){
+               x = currentPlayer.getLocation().getX();
+               y = currentPlayer.getLocation().getY();
+               currentTile = board[x][y];
+               nextTile = board[x - 1][y];
+               if(!nextTile.isWall()){
+                   currentTile.setIcon(null);
+                   currentTile.setEnabled(false);
+                   nextTile.setIcon(getIcon(currentPlayer.getName()));
+                   nextTile.setEnabled(true);
+                   currentPlayer.getLocation().setX(x-1);
+               }
+           }
     }
 
     private void movePlayerDown() {
         int steps = currentPlayer.getSteps();
-        int x = currentPlayer.getLocation().getX();
-        int y = currentPlayer.getLocation().getY();
-        Tile nextTile = board[x + steps][y];
-        Tile currentTile = board[x][y];
-        if (!nextTile.isWall()) {
-            currentTile.setIcon(null);
-            currentTile.setEnabled(false);
-            nextTile.setIcon(getIcon(currentPlayer.getName()));
-            nextTile.setEnabled(true);
-            currentPlayer.getLocation().setX(x+steps);
+        int x,y;
+        Tile nextTile,currentTile;
+
+        for(int i=0;i<steps;i++){
+            x = currentPlayer.getLocation().getX();
+            y = currentPlayer.getLocation().getY();
+            currentTile = board[x][y];
+            nextTile = board[x + 1][y];
+            if(!nextTile.isWall()){
+                currentTile.setIcon(null);
+                currentTile.setEnabled(false);
+                nextTile.setIcon(getIcon(currentPlayer.getName()));
+                nextTile.setEnabled(true);
+                currentPlayer.getLocation().setX(x+1);
+            }
         }
     }
 
     private void movePlayerRight() {
         int steps = currentPlayer.getSteps();
-        int x = currentPlayer.getLocation().getX();
-        int y = currentPlayer.getLocation().getY();
-        Tile nextTile = board[x][y + steps];
-        Tile currentTile = board[x][y];
+        int x,y;
+        Tile nextTile,currentTile;
 
-        if (!nextTile.isWall()) {
-            currentTile.setIcon(null);
-            currentTile.setEnabled(false);
-            nextTile.setIcon(getIcon(currentPlayer.getName()));
-            nextTile.setEnabled(true);
-            currentPlayer.getLocation().setY(y+steps);
+        for(int i=0;i<steps;i++){
+            x = currentPlayer.getLocation().getX();
+            y = currentPlayer.getLocation().getY();
+            currentTile = board[x][y];
+            nextTile = board[x][y+1];
+            if(!nextTile.isWall()){
+                currentTile.setIcon(null);
+                currentTile.setEnabled(false);
+                nextTile.setIcon(getIcon(currentPlayer.getName()));
+                nextTile.setEnabled(true);
+                currentPlayer.getLocation().setY(y+1);
+            }
         }
     }
 
     private void movePlayerLeft() {
         int steps = currentPlayer.getSteps();
-        int x = currentPlayer.getLocation().getX();
-        int y = currentPlayer.getLocation().getY();
-        Tile nextTile = board[x][y - steps];
-        Tile currentTile = board[x][y];
-        if (!nextTile.isWall()) {
-            currentTile.setIcon(null);
-            currentTile.setEnabled(false);
-            nextTile.setIcon(getIcon(currentPlayer.getName()));
-            nextTile.setEnabled(true);
-            currentPlayer.getLocation().setY(y-steps);
+        int x,y;
+        Tile nextTile,currentTile;
+
+        for(int i=0;i<steps;i++){
+            x = currentPlayer.getLocation().getX();
+            y = currentPlayer.getLocation().getY();
+            currentTile = board[x][y];
+            nextTile = board[x][y-1];
+            if(!nextTile.isWall()){
+                currentTile.setIcon(null);
+                currentTile.setEnabled(false);
+                nextTile.setIcon(getIcon(currentPlayer.getName()));
+                nextTile.setEnabled(true);
+                currentPlayer.getLocation().setY(y-1);
+            }
         }
     }
 
