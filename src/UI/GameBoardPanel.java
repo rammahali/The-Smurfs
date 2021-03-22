@@ -18,19 +18,14 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     private Tile[][] board = new Tile[11][13];
     private JLabel pointsLabel = new JLabel();
     private int points = 0;
-    private LazySmurf lazySmurf = new LazySmurf();
-    private SmartSmurf smartSmurf = new SmartSmurf();
-    private String currentPlayer;
-    private ImageIcon lazySmurfICon = new ImageIcon(new ImageIcon("src/Images/lazySmurf.png").getImage());
-    private ImageIcon smartSmurfICon = new ImageIcon(new ImageIcon("src/Images/smartSmurf.png").getImage());
     private ImageIcon goldIcon = new ImageIcon(new ImageIcon("src/Images/gold.png").getImage());
     private ImageIcon mushroomIcon = new ImageIcon(new ImageIcon("src/Images/mushroom.png").getImage());
-    private int playerX = 5, playerY = 6;
     private ArrayList<Tile> objectTiles = new ArrayList<>();
+    private ArrayList<Enemy> enemies = new ArrayList<>();
     private Timer objectsTimer;
+    private Player currentPlayer;
 
-
-    public GameBoardPanel(String playerCharacter) throws FileNotFoundException {
+    public GameBoardPanel(Player playerCharacter) throws FileNotFoundException {
         //TODO: Fix smart smurf wall bug
         // Fix smart smurf going over objects bug
         // Fix wall boundaries out of limit bug
@@ -39,7 +34,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     }
 
 
-    private void initialize(String playerCharacter) throws FileNotFoundException {
+    private void initialize(Player playerCharacter) throws FileNotFoundException {
         this.setFocusable(true);
         this.addKeyListener(new MyKeyAdapter());
         populateBoard();
@@ -49,15 +44,10 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     }
 
 
-    private void instantiate(String playerCharacter, ArrayList<String> enemyData) {
-        // set the current player to the selected character
-        currentPlayer = playerCharacter;
+    private void instantiate(Player playerCharacter, ArrayList<String> enemyData) {
 
-        // instantiate players
-        if (playerCharacter.equals("Lazy Smurf"))
-            instantiateLazySmurf();
-        else
-            instantiateSmartSmurf();
+        // instantiate player
+         instantiatePlayerCharacter(playerCharacter);
 
         // instantiate enemies
         for (int i = 0; i < enemyData.size() - 1; i++)
@@ -65,15 +55,14 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             instantiateEnemyAtDoor(enemyData.get(i), enemyData.get(i + 1));
     }
 
-    private void instantiateLazySmurf() {
-        board[5][6].setIcon(lazySmurfICon);
+    private void instantiatePlayerCharacter(Player playerCharacter) {
+        currentPlayer= playerCharacter;
+        currentPlayer.setLocation(new Location(5,6));
+        board[5][6].setIcon(new ImageIcon(new ImageIcon("src/Images/"+playerCharacter.getName()+".png").getImage()));
         board[5][6].setEnabled(true);
+
     }
 
-    private void instantiateSmartSmurf() {
-        board[5][6].setIcon(smartSmurfICon);
-        board[5][6].setEnabled(true);
-    }
 
     private void instantiateEnemyAtDoor(String enemy, String door) {
         switch (door) {
@@ -82,26 +71,71 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 board[0][3].setEnabled(true);
                 board[0][3].setBackground(Color.white);
                 board[0][3].setIcon(new ImageIcon(new ImageIcon("src/Images/" + enemy + ".png").getImage()));
+                if(enemy.equals("Gargamel")){
+                    Gargamel gargamel = new Gargamel();
+                    gargamel.setLocation(new Location(0,3));
+                    enemies.add(gargamel);
+                }
+                else{
+                    Azman azman = new Azman();
+                    azman.setLocation(new Location(0,3));
+                    enemies.add(azman);
+                }
+
                 break;
             case "B":
                 board[0][10].setText("");
                 board[0][10].setEnabled(true);
                 board[0][10].setBackground(Color.white);
                 board[0][10].setIcon(new ImageIcon(new ImageIcon("src/Images/" + enemy + ".png").getImage()));
+                if(enemy.equals("Gargamel")){
+                    Gargamel gargamel = new Gargamel();
+                    gargamel.setLocation(new Location(0,10));
+                    enemies.add(gargamel);
+                }
+                else{
+                    Azman azman = new Azman();
+                    azman.setLocation(new Location(0,10));
+                    enemies.add(azman);
+                }
                 break;
             case "C":
                 board[5][0].setText("");
                 board[5][0].setEnabled(true);
                 board[5][0].setBackground(Color.white);
                 board[5][0].setIcon(new ImageIcon(new ImageIcon("src/Images/" + enemy + ".png").getImage()));
+
+                if(enemy.equals("Gargamel")){
+                    Gargamel gargamel = new Gargamel();
+                    gargamel.setLocation(new Location(5,0));
+                    enemies.add(gargamel);
+                }
+                else{
+                    Azman azman = new Azman();
+                    azman.setLocation(new Location(5,0));
+                    enemies.add(azman);
+                }
                 break;
             case "D":
                 board[10][3].setText("");
                 board[10][3].setEnabled(true);
                 board[10][3].setBackground(Color.white);
                 board[10][3].setIcon(new ImageIcon(new ImageIcon("src/Images/" + enemy + ".png").getImage()));
+
+                if(enemy.equals("Gargamel")){
+                    Gargamel gargamel = new Gargamel();
+                    gargamel.setLocation(new Location(10,3));
+                    enemies.add(gargamel);
+                }
+                else{
+                    Azman azman = new Azman();
+                    azman.setLocation(new Location(10,3));
+                    enemies.add(azman);
+                }
                 break;
         }
+
+
     }
 
     private void populateBoard() {
@@ -189,11 +223,10 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         hideObjects();
-        if (currentPlayer.equals("Lazy Smurf"))
-            board[playerX][playerY].setIcon(lazySmurfICon);
-        else
-            board[playerX][playerY].setIcon(smartSmurfICon);
-
+        int x =  currentPlayer.getLocation().getX();
+        int y = currentPlayer.getLocation().getY();
+        board[x][y].setIcon(new ImageIcon(new ImageIcon("src/Images/"+currentPlayer.getName()+".png").getImage()));
+        board[x][y].setEnabled(true);
     }
 
     private void instantiateRandomObjects() {
@@ -263,8 +296,8 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
     private void movePlayerUp(Player playerCharacter) {
         int steps = playerCharacter.getSteps();
-        int x = playerX;
-        int y = playerY;
+        int x = currentPlayer.getLocation().getX();
+        int y = currentPlayer.getLocation().getY();
         Tile nextTile = board[x - steps][y];
         Tile currentTile = board[x][y];
         if (!nextTile.isWall()) {
@@ -272,14 +305,14 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             currentTile.setEnabled(false);
             nextTile.setIcon(new ImageIcon(new ImageIcon("src/Images/" + playerCharacter.getName() + ".png").getImage()));
             nextTile.setEnabled(true);
-            playerX = playerX - steps;
+            currentPlayer.getLocation().setX(x-steps);
         }
     }
 
     private void movePlayerDown(Player playerCharacter) {
         int steps = playerCharacter.getSteps();
-        int x = playerX;
-        int y = playerY;
+        int x = currentPlayer.getLocation().getX();
+        int y = currentPlayer.getLocation().getY();
         Tile nextTile = board[x + steps][y];
         Tile currentTile = board[x][y];
         if (!nextTile.isWall()) {
@@ -287,14 +320,14 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             currentTile.setEnabled(false);
             nextTile.setIcon(new ImageIcon(new ImageIcon("src/Images/" + playerCharacter.getName() + ".png").getImage()));
             nextTile.setEnabled(true);
-            playerX = playerX + steps;
+            currentPlayer.getLocation().setX(x+steps);
         }
     }
 
     private void movePlayerRight(Player playerCharacter) {
         int steps = playerCharacter.getSteps();
-        int x = playerX;
-        int y = playerY;
+        int x = currentPlayer.getLocation().getX();
+        int y = currentPlayer.getLocation().getY();
         Tile nextTile = board[x][y + steps];
         Tile currentTile = board[x][y];
 
@@ -303,14 +336,14 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             currentTile.setEnabled(false);
             nextTile.setIcon(new ImageIcon(new ImageIcon("src/Images/" + playerCharacter.getName() + ".png").getImage()));
             nextTile.setEnabled(true);
-            playerY = playerY + steps;
+            currentPlayer.getLocation().setY(y+steps);
         }
     }
 
     private void movePlayerLeft(Player playerCharacter) {
         int steps = playerCharacter.getSteps();
-        int x = playerX;
-        int y = playerY;
+        int x = currentPlayer.getLocation().getX();
+        int y = currentPlayer.getLocation().getY();
         Tile nextTile = board[x][y - steps];
         Tile currentTile = board[x][y];
         if (!nextTile.isWall()) {
@@ -318,7 +351,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             currentTile.setEnabled(false);
             nextTile.setIcon(new ImageIcon(new ImageIcon("src/Images/" + playerCharacter.getName() + ".png").getImage()));
             nextTile.setEnabled(true);
-            playerY = playerY - steps;
+            currentPlayer.getLocation().setY(y-steps);
         }
     }
 
@@ -342,31 +375,18 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_LEFT:
-                    if (currentPlayer.equals("Lazy Smurf"))
-                        movePlayerLeft(lazySmurf);
-                    else
-                        movePlayerLeft(smartSmurf);
-
-
+                   movePlayerLeft(currentPlayer);
                     break;
                 case KeyEvent.VK_RIGHT:
-                    if (currentPlayer.equals("Lazy Smurf"))
-                        movePlayerRight(lazySmurf);
-                    else
-                        movePlayerRight(smartSmurf);
+                    movePlayerRight(currentPlayer);
                     break;
 
                 case KeyEvent.VK_UP:
-                    if (currentPlayer.equals("Lazy Smurf"))
-                        movePlayerUp(lazySmurf);
-                    else
-                        movePlayerUp(smartSmurf);
+                    movePlayerUp(currentPlayer);
+
                     break;
                 case KeyEvent.VK_DOWN:
-                    if (currentPlayer.equals("Lazy Smurf"))
-                        movePlayerDown(lazySmurf);
-                    else
-                        movePlayerDown(smartSmurf);
+                    movePlayerDown(currentPlayer);
                     break;
 
             }

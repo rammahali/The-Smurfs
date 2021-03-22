@@ -1,5 +1,8 @@
 package UI;
 
+import Core.LazySmurf;
+import Core.SmartSmurf;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.FileNotFoundException;
@@ -101,7 +104,7 @@ public class PlayerSelection extends javax.swing.JFrame {
 
     private void onLazySmurfSelected(java.awt.event.ActionEvent evt) {
         try{
-             new GameBoard("Lazy Smurf");
+             new GameBoard(new LazySmurf());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -110,7 +113,7 @@ public class PlayerSelection extends javax.swing.JFrame {
 
     private void onSmartSmurfSelected(java.awt.event.ActionEvent evt) {
         try{
-            new GameBoard("Smart Smurf");
+            new GameBoard(new SmartSmurf());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
