@@ -172,7 +172,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 enemyData.add(door);
             }
 
-            // if the current line doesn't contain "Karakter", then it should be "1" or "0" , 0 indicates for wall
+            // if the current line doesn't contain "Karakter", then it should be "1" or "0" , 0 indicates for wall.
 
             if (currentWord.equals("0")) {
                 board[i][j].setBackground(Color.gray);
