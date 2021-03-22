@@ -289,16 +289,18 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         for (Tile objectTile : objectTiles) {
             if (objectTile.HasGold()) {
                 objectTile.setHasGold(false);
+                objectTile.setEnabled(false);
                 objectTile.setIcon(null);
             } else {
                 objectTile.setHasMushroom(false);
+                objectTile.setEnabled(false);
                 objectTile.setIcon(null);
             }
         }
     }
 
-    private void movePlayerUp(Player playerCharacter) {
-        int steps = playerCharacter.getSteps();
+    private void movePlayerUp() {
+        int steps = currentPlayer.getSteps();
         int x = currentPlayer.getLocation().getX();
         int y = currentPlayer.getLocation().getY();
         Tile nextTile = board[x - steps][y];
@@ -312,8 +314,8 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         }
     }
 
-    private void movePlayerDown(Player playerCharacter) {
-        int steps = playerCharacter.getSteps();
+    private void movePlayerDown() {
+        int steps = currentPlayer.getSteps();
         int x = currentPlayer.getLocation().getX();
         int y = currentPlayer.getLocation().getY();
         Tile nextTile = board[x + steps][y];
@@ -327,8 +329,8 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         }
     }
 
-    private void movePlayerRight(Player playerCharacter) {
-        int steps = playerCharacter.getSteps();
+    private void movePlayerRight() {
+        int steps = currentPlayer.getSteps();
         int x = currentPlayer.getLocation().getX();
         int y = currentPlayer.getLocation().getY();
         Tile nextTile = board[x][y + steps];
@@ -343,8 +345,8 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         }
     }
 
-    private void movePlayerLeft(Player playerCharacter) {
-        int steps = playerCharacter.getSteps();
+    private void movePlayerLeft() {
+        int steps = currentPlayer.getSteps();
         int x = currentPlayer.getLocation().getX();
         int y = currentPlayer.getLocation().getY();
         Tile nextTile = board[x][y - steps];
@@ -378,18 +380,18 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_LEFT:
-                   movePlayerLeft(currentPlayer);
+                   movePlayerLeft();
                     break;
                 case KeyEvent.VK_RIGHT:
-                    movePlayerRight(currentPlayer);
+                    movePlayerRight();
                     break;
 
                 case KeyEvent.VK_UP:
-                    movePlayerUp(currentPlayer);
+                    movePlayerUp();
 
                     break;
                 case KeyEvent.VK_DOWN:
-                    movePlayerDown(currentPlayer);
+                    movePlayerDown();
                     break;
 
             }
