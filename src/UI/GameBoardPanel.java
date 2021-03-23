@@ -222,7 +222,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        //  mushrooms should be hiden 2 sec after gold.
+        //  mushrooms should be hidden 2 sec after gold.
 
         hideGold(); // when the gold timer reach the limit (5 sec) gold will be hidden
         startMushroomTimer(); // then it will trigger the mushroom timer which will last only for 2 sec after gold timer ends.
@@ -309,7 +309,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         showPlayer();
     }
 
-    // when hiding objects player icon will be hiden if the player is standing in an object tile , this method will be called in such
+    // when hiding objects player icon will be hidden if the player is standing at an object tile , this method will be called in such
     // cases to repaint player's icon.
     private void showPlayer() {
         int x = currentPlayer.getLocation().getX();
@@ -320,81 +320,99 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
     private void movePlayerUp() {
         int steps = currentPlayer.getSteps();
-        int x, y;
+        int movedSteps=0;
         Tile nextTile, currentTile;
-
-        for (int i = 0; i < steps; i++) {
+        int x = currentPlayer.getLocation().getX();
+        int  y = currentPlayer.getLocation().getY();
+        while(movedSteps<steps&& !board[x - steps][y].isWall()){
             x = currentPlayer.getLocation().getX();
             y = currentPlayer.getLocation().getY();
             currentTile = board[x][y];
             nextTile = board[x - 1][y];
-            if (!nextTile.isWall()) {
+            if (!nextTile.isWall() ) {
                 currentTile.setIcon(null);
                 currentTile.setEnabled(false);
                 nextTile.setIcon(getIcon(currentPlayer.getName()));
                 nextTile.setEnabled(true);
                 currentPlayer.getLocation().setX(x - 1);
+                movedSteps++;
             }
+            else
+                break;
         }
     }
 
     private void movePlayerDown() {
         int steps = currentPlayer.getSteps();
-        int x, y;
+        int movedSteps=0;
         Tile nextTile, currentTile;
-
-        for (int i = 0; i < steps; i++) {
+        int x = currentPlayer.getLocation().getX();
+        int  y = currentPlayer.getLocation().getY();
+        while(movedSteps<steps&& !board[x + steps][y].isWall()){
             x = currentPlayer.getLocation().getX();
             y = currentPlayer.getLocation().getY();
             currentTile = board[x][y];
             nextTile = board[x + 1][y];
-            if (!nextTile.isWall()) {
+            if (!nextTile.isWall() ) {
                 currentTile.setIcon(null);
                 currentTile.setEnabled(false);
                 nextTile.setIcon(getIcon(currentPlayer.getName()));
                 nextTile.setEnabled(true);
                 currentPlayer.getLocation().setX(x + 1);
+                movedSteps++;
             }
+
+            else
+                break;
+
         }
     }
 
     private void movePlayerRight() {
         int steps = currentPlayer.getSteps();
-        int x, y;
+        int movedSteps=0;
         Tile nextTile, currentTile;
-
-        for (int i = 0; i < steps; i++) {
+        int x = currentPlayer.getLocation().getX();
+        int  y = currentPlayer.getLocation().getY();
+        while(movedSteps<steps&& !board[x][y+steps].isWall()){
             x = currentPlayer.getLocation().getX();
             y = currentPlayer.getLocation().getY();
             currentTile = board[x][y];
-            nextTile = board[x][y + 1];
-            if (!nextTile.isWall()) {
+            nextTile = board[x][y+1];
+            if (!nextTile.isWall() ) {
                 currentTile.setIcon(null);
                 currentTile.setEnabled(false);
                 nextTile.setIcon(getIcon(currentPlayer.getName()));
                 nextTile.setEnabled(true);
-                currentPlayer.getLocation().setY(y + 1);
+                currentPlayer.getLocation().setY(y+1);
+                movedSteps++;
             }
+            else
+                break;
         }
     }
 
     private void movePlayerLeft() {
         int steps = currentPlayer.getSteps();
-        int x, y;
+        int movedSteps=0;
         Tile nextTile, currentTile;
-
-        for (int i = 0; i < steps; i++) {
+        int x = currentPlayer.getLocation().getX();
+        int  y = currentPlayer.getLocation().getY();
+        while(movedSteps<steps&& !board[x][y-steps].isWall()){
             x = currentPlayer.getLocation().getX();
             y = currentPlayer.getLocation().getY();
             currentTile = board[x][y];
-            nextTile = board[x][y - 1];
-            if (!nextTile.isWall()) {
+            nextTile = board[x][y-1];
+            if (!nextTile.isWall() ) {
                 currentTile.setIcon(null);
                 currentTile.setEnabled(false);
                 nextTile.setIcon(getIcon(currentPlayer.getName()));
                 nextTile.setEnabled(true);
                 currentPlayer.getLocation().setY(y - 1);
+                movedSteps++;
             }
+            else
+                break;
         }
     }
 
