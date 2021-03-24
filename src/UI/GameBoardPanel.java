@@ -40,6 +40,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         instantiate(playerCharacter, parseMap("src/Core/harita.txt"));
         instantiateRandomObjects();
         startGoldTimer();
+        testFakeShortestPath();
     }
 
 
@@ -336,6 +337,9 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 nextTile.setEnabled(true);
                 currentPlayer.getLocation().setX(x - 1);
                 movedSteps++;
+
+                //TODO: ONLY FOR SHORT PATH AND ENEMY MOEVMENT TESTING , WILL BE REMOVED :
+                currentTile.setBackground(Color.cyan);
             }
             else
                 break;
@@ -360,6 +364,8 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 nextTile.setEnabled(true);
                 currentPlayer.getLocation().setX(x + 1);
                 movedSteps++;
+                //TODO: ONLY FOR SHORT PATH AND ENEMY MOEVMENT TESTING , WILL BE REMOVED :
+                currentTile.setBackground(Color.cyan);
             }
 
             else
@@ -386,6 +392,9 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 nextTile.setEnabled(true);
                 currentPlayer.getLocation().setY(y+1);
                 movedSteps++;
+
+                //TODO: ONLY FOR SHORT PATH AND ENEMY MOEVMENT TESTING , WILL BE REMOVED :
+                currentTile.setBackground(Color.cyan);
             }
             else
                 break;
@@ -410,10 +419,77 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 nextTile.setEnabled(true);
                 currentPlayer.getLocation().setY(y - 1);
                 movedSteps++;
+
+                //TODO: ONLY FOR SHORT PATH AND ENEMY MOEVMENT TESTING , WILL BE REMOVED :
+                currentTile.setBackground(Color.cyan);
             }
             else
                 break;
         }
+    }
+
+    private void moveEnemy(Enemy enemy){
+        int steps = enemy.getSteps();
+        int x = enemy.getLocation().getX();
+        int y = enemy.getLocation().getY();
+        int movedSteps= 0;
+        Tile currentTile;
+        Tile destination =board[x][y];
+
+        while (movedSteps<steps){
+            // check all the possible movements :
+            try{
+                //upper tile
+                if(board[x-1][y].getBackground()==Color.CYAN){
+                    destination=board[x-1][y];
+                    enemy.getLocation().setX(x-1);
+                }
+            } catch (Exception e){}
+            try{
+                // lower tile
+                if(board[x+1][y].getBackground()==Color.CYAN){
+                    destination=board[x+1][y];
+                    enemy.getLocation().setX(x+1);
+                }
+            } catch (Exception e){}
+            try{
+                // right tile
+                if(board[x][y+1].getBackground()==Color.CYAN){
+                    destination=board[x][y+1];
+                    enemy.getLocation().setY(y+1);
+                }
+            } catch (Exception e){}
+            try{
+                // left tile
+                if(board[x][y-1].getBackground()==Color.CYAN){
+                    destination=board[x][y-1];
+                    enemy.getLocation().setY(y-1);
+                }
+            } catch (Exception e){}
+            currentTile=board[x][y];
+            currentTile.setEnabled(false);
+            currentTile.setIcon(null);
+            currentTile.setBackground(Color.white);
+            destination.setIcon(getIcon(enemy.getName()));
+            destination.setEnabled(true);
+            x=enemy.getLocation().getX();
+            y=enemy.getLocation().getX();
+            movedSteps++;
+        }
+    }
+
+
+    private void testFakeShortestPath(){
+        board[1][10].setBackground(Color.cyan);
+        board[1][9].setBackground(Color.cyan);
+        board[1][8].setBackground(Color.cyan);
+        board[1][7].setBackground(Color.cyan);
+        board[1][6].setBackground(Color.cyan);
+        board[2][6].setBackground(Color.cyan);
+        board[3][6].setBackground(Color.cyan);
+        board[4][6].setBackground(Color.cyan);
+        board[5][6].setBackground(Color.cyan);
+
     }
 
     public Tile[][] getBoard() {
@@ -437,17 +513,21 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_LEFT:
                     movePlayerLeft();
+                    moveEnemy(enemies.get(1));
                     break;
                 case KeyEvent.VK_RIGHT:
                     movePlayerRight();
+                    moveEnemy(enemies.get(1));
                     break;
 
                 case KeyEvent.VK_UP:
                     movePlayerUp();
+                    moveEnemy(enemies.get(1));
 
                     break;
                 case KeyEvent.VK_DOWN:
                     movePlayerDown();
+                    moveEnemy(enemies.get(1));
                     break;
 
             }
