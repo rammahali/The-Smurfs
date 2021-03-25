@@ -225,7 +225,6 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         //  mushrooms should be hidden 2 sec after gold.
-
         hideGold(); // when the gold timer reach the limit (5 sec) gold will be hidden
         startMushroomTimer(); // then it will trigger the mushroom timer which will last only for 2 sec after gold timer ends.
     }
@@ -518,7 +517,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
         if(currentTile.HasGold() || currentTile.HasMushroom()){
             // when new object is added the object's location is stored at objectTiles array , and it's type is stored at ObjectTypes array synchronously.
-            // so both arrayLists should  will have the same index for each object.
+            // so both arrayLists  will have the same index for each object.
             int tileIndex =objectTiles.indexOf(currentTile);
             int addedPoints = objectTypes.get(tileIndex).getPoints();
              points = points+addedPoints;
