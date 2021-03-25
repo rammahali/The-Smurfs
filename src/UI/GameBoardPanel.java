@@ -300,7 +300,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 objectTile.setIcon(null);
             }
         }
-        showPlayer();
+        rePaint();
     }
 
     private void hideMushroom() {
@@ -311,16 +311,23 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 objectTile.setIcon(null);
             }
         }
-        showPlayer();
+        rePaint();
     }
 
-    // when hiding objects player icon will be hidden if the player is standing at an object tile , this method will be called in such
-    // cases to repaint player's icon.
-    private void showPlayer() {
+    // when hiding objects, player or enemy icon will be hidden if the player or the enemy is standing at an object tile , this method will be called in such
+    // cases to repaint player and enemy's  icon.
+    private void rePaint() {
         int x = currentPlayer.getLocation().getX();
         int y = currentPlayer.getLocation().getY();
         board[x][y].setIcon(getIcon(currentPlayer.getName()));
         board[x][y].setEnabled(true);
+        for (Enemy enemy : enemies) {
+           int enemyX= enemy.getLocation().getX();
+           int enemyY= enemy.getLocation().getY();
+           Tile enemyTile = board[enemyX][enemyY];
+           enemyTile.setIcon(getIcon(enemy.getName()));
+           enemyTile.setEnabled(true);
+        }
     }
 
     private void movePlayerUp() {
@@ -548,6 +555,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         Tile currentPlayerTile = board[x][y];
         currentPlayerTile.setBackground(Color.white);
         currentPlayerTile.setIcon(null);
+        currentPlayerTile.setEnabled(false);
         instantiatePlayerCharacter(currentPlayer);
 
         for (Enemy enemy : enemies) {
@@ -556,6 +564,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
            Tile enemyTile = board[enemyX][enemyY];
             enemyTile.setBackground(Color.white);
             enemyTile.setIcon(null);
+            enemyTile.setEnabled(false);
             int enemyDoorIndex = enemyData.indexOf(enemy.getName())+1; // every door is stored after it's enemy's name
             reInstantiateEnemyAtDoor(enemy,enemyData.get(enemyDoorIndex));
         }
