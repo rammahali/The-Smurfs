@@ -17,13 +17,10 @@ import java.util.Scanner;
 
 public class GameBoardPanel extends JPanel implements ActionListener {
     private Tile[][] board = new Tile[11][13];
-    private JLabel pointsLabel = new JLabel();
     private int points = 0;
-    private ArrayList<Tile> objectTiles = new ArrayList<>();
-    private ArrayList<Object> objectTypes = new ArrayList<>();
-    private ArrayList<Enemy> enemies = new ArrayList<>();
-    private Timer goldTimer;
-    private Timer mushroomTimer;
+    private final ArrayList<Tile> objectTiles = new ArrayList<>();
+    private final ArrayList<Object> objectTypes = new ArrayList<>();
+    private final ArrayList<Enemy> enemies = new ArrayList<>();
     private Player currentPlayer;
 
     public GameBoardPanel(Player playerCharacter) throws FileNotFoundException {
@@ -41,7 +38,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         populateBoard();
         instantiate(playerCharacter, parseMap("src/Core/harita.txt"));
         instantiateRandomObjects();
-        startGoldTimer();
+        startGoldTimer(); // gold timer will trigger mushrooms timer after it finish
         testFakeShortestPath();
     }
 
@@ -279,13 +276,13 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     }
 
     private void startGoldTimer() {
-        goldTimer = new Timer(5000, this);
+        Timer goldTimer = new Timer(5000, this);
         goldTimer.setRepeats(false);
         goldTimer.start();
     }
 
     private void startMushroomTimer() {
-        mushroomTimer = new Timer(2000, e -> hideMushroom());
+        Timer mushroomTimer = new Timer(2000, e -> hideMushroom());
         mushroomTimer.setRepeats(false);
         mushroomTimer.start();
     }
@@ -323,16 +320,16 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
     private void movePlayerUp() {
         int steps = currentPlayer.getSteps();
-        int movedSteps=0;
+        int movedSteps = 0;
         Tile nextTile, currentTile;
         int x = currentPlayer.getLocation().getX();
-        int  y = currentPlayer.getLocation().getY();
-        while(movedSteps<steps&& !board[x - steps][y].isWall()){
+        int y = currentPlayer.getLocation().getY();
+        while (movedSteps < steps && !board[x - steps][y].isWall()) {
             x = currentPlayer.getLocation().getX();
             y = currentPlayer.getLocation().getY();
             currentTile = board[x][y];
             nextTile = board[x - 1][y];
-            if (!nextTile.isWall() ) {
+            if (!nextTile.isWall()) {
                 currentTile.setIcon(null);
                 currentTile.setEnabled(false);
                 nextTile.setIcon(getIcon(currentPlayer.getName()));
@@ -342,24 +339,23 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
                 //TODO: ONLY FOR SHORT PATH AND ENEMY MOEVMENT TESTING , WILL BE REMOVED :
                 currentTile.setBackground(Color.cyan);
-            }
-            else
+            } else
                 break;
         }
     }
 
     private void movePlayerDown() {
         int steps = currentPlayer.getSteps();
-        int movedSteps=0;
+        int movedSteps = 0;
         Tile nextTile, currentTile;
         int x = currentPlayer.getLocation().getX();
-        int  y = currentPlayer.getLocation().getY();
-        while(movedSteps<steps&& !board[x + steps][y].isWall()){
+        int y = currentPlayer.getLocation().getY();
+        while (movedSteps < steps && !board[x + steps][y].isWall()) {
             x = currentPlayer.getLocation().getX();
             y = currentPlayer.getLocation().getY();
             currentTile = board[x][y];
             nextTile = board[x + 1][y];
-            if (!nextTile.isWall() ) {
+            if (!nextTile.isWall()) {
                 currentTile.setIcon(null);
                 currentTile.setEnabled(false);
                 nextTile.setIcon(getIcon(currentPlayer.getName()));
@@ -368,9 +364,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 movedSteps++;
                 //TODO: ONLY FOR SHORT PATH AND ENEMY MOEVMENT TESTING , WILL BE REMOVED :
                 currentTile.setBackground(Color.cyan);
-            }
-
-            else
+            } else
                 break;
 
         }
@@ -378,43 +372,42 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
     private void movePlayerRight() {
         int steps = currentPlayer.getSteps();
-        int movedSteps=0;
+        int movedSteps = 0;
         Tile nextTile, currentTile;
         int x = currentPlayer.getLocation().getX();
-        int  y = currentPlayer.getLocation().getY();
-        while(movedSteps<steps&& !board[x][y+steps].isWall()){
+        int y = currentPlayer.getLocation().getY();
+        while (movedSteps < steps && !board[x][y + steps].isWall()) {
             x = currentPlayer.getLocation().getX();
             y = currentPlayer.getLocation().getY();
             currentTile = board[x][y];
-            nextTile = board[x][y+1];
-            if (!nextTile.isWall() ) {
+            nextTile = board[x][y + 1];
+            if (!nextTile.isWall()) {
                 currentTile.setIcon(null);
                 currentTile.setEnabled(false);
                 nextTile.setIcon(getIcon(currentPlayer.getName()));
                 nextTile.setEnabled(true);
-                currentPlayer.getLocation().setY(y+1);
+                currentPlayer.getLocation().setY(y + 1);
                 movedSteps++;
 
                 //TODO: ONLY FOR SHORT PATH AND ENEMY MOEVMENT TESTING , WILL BE REMOVED :
                 currentTile.setBackground(Color.cyan);
-            }
-            else
+            } else
                 break;
         }
     }
 
     private void movePlayerLeft() {
         int steps = currentPlayer.getSteps();
-        int movedSteps=0;
+        int movedSteps = 0;
         Tile nextTile, currentTile;
         int x = currentPlayer.getLocation().getX();
-        int  y = currentPlayer.getLocation().getY();
-        while(movedSteps<steps&& !board[x][y-steps].isWall()){
+        int y = currentPlayer.getLocation().getY();
+        while (movedSteps < steps && !board[x][y - steps].isWall()) {
             x = currentPlayer.getLocation().getX();
             y = currentPlayer.getLocation().getY();
             currentTile = board[x][y];
-            nextTile = board[x][y-1];
-            if (!nextTile.isWall() ) {
+            nextTile = board[x][y - 1];
+            if (!nextTile.isWall()) {
                 currentTile.setIcon(null);
                 currentTile.setEnabled(false);
                 nextTile.setIcon(getIcon(currentPlayer.getName()));
@@ -424,64 +417,67 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
                 //TODO: ONLY FOR SHORT PATH AND ENEMY MOEVMENT TESTING , WILL BE REMOVED :
                 currentTile.setBackground(Color.cyan);
-            }
-            else
+            } else
                 break;
         }
     }
 
-    private void moveEnemy(Enemy enemy){
+    private void moveEnemy(Enemy enemy) {
         int steps = enemy.getSteps();
         int x = enemy.getLocation().getX();
         int y = enemy.getLocation().getY();
-        int movedSteps= 0;
+        int movedSteps = 0;
         Tile currentTile;
-        Tile destination =board[x][y];
+        Tile destination = board[x][y];
 
-        while (movedSteps<steps){
+        while (movedSteps < steps) {
             // check all the possible movements :
-            try{
+            try {
                 //upper tile
-                if(board[x-1][y].getBackground()==Color.CYAN){
-                    destination=board[x-1][y];
-                    enemy.getLocation().setX(x-1);
+                if (board[x - 1][y].getBackground() == Color.CYAN) {
+                    destination = board[x - 1][y];
+                    enemy.getLocation().setX(x - 1);
                 }
-            } catch (Exception e){}
-            try{
+            } catch (Exception ignored) {
+            }
+            try {
                 // lower tile
-                if(board[x+1][y].getBackground()==Color.CYAN){
-                    destination=board[x+1][y];
-                    enemy.getLocation().setX(x+1);
+                if (board[x + 1][y].getBackground() == Color.CYAN) {
+                    destination = board[x + 1][y];
+                    enemy.getLocation().setX(x + 1);
                 }
-            } catch (Exception e){}
-            try{
+            } catch (Exception ignored) {
+            }
+            try {
                 // right tile
-                if(board[x][y+1].getBackground()==Color.CYAN){
-                    destination=board[x][y+1];
-                    enemy.getLocation().setY(y+1);
+                if (board[x][y + 1].getBackground() == Color.CYAN) {
+                    destination = board[x][y + 1];
+                    enemy.getLocation().setY(y + 1);
                 }
-            } catch (Exception e){}
-            try{
+            } catch (Exception ignored) {
+            }
+            try {
                 // left tile
-                if(board[x][y-1].getBackground()==Color.CYAN){
-                    destination=board[x][y-1];
-                    enemy.getLocation().setY(y-1);
+                if (board[x][y - 1].getBackground() == Color.CYAN) {
+                    destination = board[x][y - 1];
+                    enemy.getLocation().setY(y - 1);
                 }
-            } catch (Exception e){}
-            currentTile=board[x][y];
+            } catch (Exception ignored) {
+            }
+            currentTile = board[x][y];
             currentTile.setEnabled(false);
             currentTile.setIcon(null);
             currentTile.setBackground(Color.white);
             destination.setIcon(getIcon(enemy.getName()));
             destination.setEnabled(true);
-            x=enemy.getLocation().getX();
-            y=enemy.getLocation().getX();
+            x = enemy.getLocation().getX();
+            y = enemy.getLocation().getX();
             movedSteps++;
         }
     }
 
 
-    private void testFakeShortestPath(){
+    private void testFakeShortestPath() {
         board[1][10].setBackground(Color.cyan);
         board[1][9].setBackground(Color.cyan);
         board[1][8].setBackground(Color.cyan);
@@ -494,47 +490,47 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
     }
 
-    private void gameLoop(){
+    private void gameLoop() {
         //Todo: add getShortestPath method here
         for (Enemy enemy : enemies) {
-          //  moveEnemy(enemy);
+            //  moveEnemy(enemy);
         }
-         moveEnemy(enemies.get(1)); // for testing only.
+        moveEnemy(enemies.get(1)); // for testing only.
         //Todo: add getShortestPath method here
         updatePoints();
         System.out.println(points); // will be replaced with Jlabel
     }
 
-    private void updatePoints(){
+    private void updatePoints() {
         didCatchObject(); // checks if the player is standing at an object's tile.
         checkForEnemyCatch();
     }
 
-    private void didCatchObject(){
+    private void didCatchObject() {
         int x = currentPlayer.getLocation().getX();
         int y = currentPlayer.getLocation().getY();
         Tile currentTile = board[x][y];
 
-        if(currentTile.HasGold() || currentTile.HasMushroom()){
+        if (currentTile.HasGold() || currentTile.HasMushroom()) {
             // when new object is added the object's location is stored at objectTiles array , and it's type is stored at ObjectTypes array synchronously.
             // so both arrayLists  will have the same index for each object.
-            int tileIndex =objectTiles.indexOf(currentTile);
+            int tileIndex = objectTiles.indexOf(currentTile);
             int addedPoints = objectTypes.get(tileIndex).getPoints();
-             points = points+addedPoints;
+            points = points + addedPoints;
         }
     }
 
-    private void checkForEnemyCatch(){
-        int x= currentPlayer.getLocation().getX();
+    private void checkForEnemyCatch() {
+        int x = currentPlayer.getLocation().getX();
         int y = currentPlayer.getLocation().getY();
         Tile playerTile = board[x][y];
         for (Enemy enemy : enemies) {
             int enemyX = enemy.getLocation().getX();
             int enemyY = enemy.getLocation().getY();
             Tile enemyTile = board[enemyX][enemyY];
-            if (playerTile==enemyTile) {
-              int hitPoints = enemy.getHitPoints();
-              points= points-hitPoints;
+            if (playerTile == enemyTile) {
+                int hitPoints = enemy.getHitPoints();
+                points = points - hitPoints;
             }
         }
     }
