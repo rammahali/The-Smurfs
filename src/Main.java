@@ -1,10 +1,7 @@
 import UI.PlayerSelection;
-import UI.GameBoard;
-import java.io.FileNotFoundException;
 
 public class Main {
-    public static void main(String[] args) throws FileNotFoundException {
-        // Don't forget to change the project working directory ../The-Smurfs
+    public static void main(String[] args)  {
         new PlayerSelection().setVisible(true);
     }
 }

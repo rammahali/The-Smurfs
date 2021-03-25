@@ -21,6 +21,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     private final ArrayList<Tile> objectTiles = new ArrayList<>();
     private final ArrayList<Object> objectTypes = new ArrayList<>();
     private final ArrayList<Enemy> enemies = new ArrayList<>();
+    private ArrayList<String> enemyData = new ArrayList<>();
     private Player currentPlayer;
 
     public GameBoardPanel(Player playerCharacter) throws FileNotFoundException {
@@ -36,7 +37,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         this.setFocusable(true);
         this.addKeyListener(new MyKeyAdapter());
         populateBoard();
-        instantiate(playerCharacter, parseMap("src/Core/harita.txt"));
+        instantiate(playerCharacter, parseMap());
         instantiateRandomObjects();
         startGoldTimer(); // gold timer will trigger mushrooms timer after it finish
         testFakeShortestPath();
@@ -146,10 +147,10 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     }
 
 
-    private ArrayList<String> parseMap(String mapPath) throws FileNotFoundException {
+    private ArrayList<String> parseMap() throws FileNotFoundException {
 
         ArrayList<String> enemyData = new ArrayList<>();
-        File map = new File(mapPath);
+        File map = new File("src/Core/harita.txt");
         Scanner mapScanner = new Scanner(map);
         int i = 0;
         int j = 0;
@@ -158,15 +159,19 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             String currentWord = mapScanner.next();
             if (currentWord.contains("Karakter") || currentWord.contains("karakter")) {
                 // get the enemy's character :
-                if (currentWord.contains("Gargamel") || currentWord.contains("gargamel"))
+                if (currentWord.contains("Gargamel") || currentWord.contains("gargamel")){
                     enemyData.add("Gargamel");
-                else
-                    enemyData.add("Azman");
+                   this.enemyData.add("Gargamel");}
+                else{
+                     enemyData.add("Azman");
+                     this.enemyData.add("Azman");
+                }
 
                 // get the enemy's door :using "api" to ignore Kapi capitalaization
                 String[] doorToken = currentWord.split("api:");
                 String door = doorToken[1];
                 enemyData.add(door);
+                this.enemyData.add(door);
             }
 
             // if the current line doesn't contain "Karakter", then it should be "1" or "0" , 0 indicates for wall.
@@ -339,6 +344,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
                 //TODO: ONLY FOR SHORT PATH AND ENEMY MOEVMENT TESTING , WILL BE REMOVED :
                 currentTile.setBackground(Color.cyan);
+                nextTile.setBackground(Color.cyan);
             } else
                 break;
         }
@@ -490,7 +496,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
     }
 
-    private void gameLoop() {
+    private void gameLoop()  {
         //Todo: add getShortestPath method here
         for (Enemy enemy : enemies) {
             //  moveEnemy(enemy);
@@ -501,7 +507,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         System.out.println(points); // will be replaced with Jlabel
     }
 
-    private void updatePoints() {
+    private void updatePoints()   {
         didCatchObject(); // checks if the player is standing at an object's tile.
         checkForEnemyCatch();
     }
@@ -520,7 +526,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         }
     }
 
-    private void checkForEnemyCatch() {
+    private void checkForEnemyCatch()   {
         int x = currentPlayer.getLocation().getX();
         int y = currentPlayer.getLocation().getY();
         Tile playerTile = board[x][y];
@@ -531,8 +537,59 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             if (playerTile == enemyTile) {
                 int hitPoints = enemy.getHitPoints();
                 points = points - hitPoints;
+                reInstantiate(); // re instantiate enemy and player's location if enemy catches a player
             }
         }
+    }
+
+    private void reInstantiate(){
+        int x =currentPlayer.getLocation().getX();
+        int y =currentPlayer.getLocation().getY();
+        Tile currentPlayerTile = board[x][y];
+        currentPlayerTile.setBackground(Color.white);
+        currentPlayerTile.setIcon(null);
+        instantiatePlayerCharacter(currentPlayer);
+
+        for (Enemy enemy : enemies) {
+           int enemyX = enemy.getLocation().getX();
+           int enemyY = enemy.getLocation().getY();
+           Tile enemyTile = board[enemyX][enemyY];
+            enemyTile.setBackground(Color.white);
+            enemyTile.setIcon(null);
+            int enemyDoorIndex = enemyData.indexOf(enemy.getName())+1; // every door is stored after it's enemy's name
+            reInstantiateEnemyAtDoor(enemy,enemyData.get(enemyDoorIndex));
+        }
+
+    }
+
+    private void reInstantiateEnemyAtDoor(Enemy enemy ,String door){
+        switch (door) {
+            case "A":
+                board[0][3].setEnabled(true);
+                board[0][3].setBackground(Color.white);
+                board[0][3].setIcon(getIcon(enemy.getName()));
+                enemy.setLocation(new Location(0,3));
+                break;
+            case "B":
+                board[0][10].setEnabled(true);
+                board[0][10].setBackground(Color.white);
+                board[0][10].setIcon(getIcon(enemy.getName()));
+                enemy.setLocation(new Location(0,10));
+                break;
+            case "C":
+                board[5][0].setEnabled(true);
+                board[5][0].setBackground(Color.white);
+                board[5][0].setIcon(getIcon(enemy.getName()));
+                enemy.setLocation(new Location(5,0));
+                break;
+            case "D":
+                board[10][3].setEnabled(true);
+                board[10][3].setBackground(Color.white);
+                board[10][3].setIcon(getIcon(enemy.getName()));
+                enemy.setLocation(new Location(10,3));
+                break;
+        }
+
     }
 
     public Tile[][] getBoard() {
