@@ -22,6 +22,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     private final ArrayList<Object> objectTypes = new ArrayList<>();
     private final ArrayList<Enemy> enemies = new ArrayList<>();
     private ArrayList<String> enemyData = new ArrayList<>();
+    private ArrayList<JLabel> pointLabels = new ArrayList<>();
     private Player currentPlayer;
 
     public GameBoardPanel(Player playerCharacter) throws FileNotFoundException {
@@ -135,7 +136,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     }
 
     private void populateBoard() {
-        this.setLayout(new GridLayout(11, 13, 0, 0));
+        this.setLayout(new GridLayout(12, 13, 0, 0));
         for (int i = 0; i < 11; i++) {
             for (int j = 0; j < 13; j++) {
                 board[i][j] = new Tile();
@@ -143,7 +144,13 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 this.add(board[i][j]);
             }
         }
-
+       for(int i=0;i<13;i++){
+           JLabel label = new JLabel();
+           pointLabels.add(label);
+           this.add(label);
+       }
+        pointLabels.get(0).setText("Points :");
+        pointLabels.get(1).setText("0"); // initial points value
     }
 
 
@@ -262,9 +269,12 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         Random random = new Random();
         int x;
         int y;
-        int MushroomCount = random.nextInt(20);
+        int MushroomCount=random.nextInt(20);
         int drawnMushroom = 0;
         Tile playerTile = board[5][6];
+        while (MushroomCount==0){  // assuring that mushroom count will never == 0
+            MushroomCount=random.nextInt(20);
+        }
         while (drawnMushroom < MushroomCount) {
             x = random.nextInt(11);
             y = random.nextInt(13);
@@ -511,7 +521,6 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         moveEnemy(enemies.get(1)); // for testing only.
         //Todo: add getShortestPath method here
         updatePoints();
-        System.out.println(points); // will be replaced with Jlabel
     }
 
     private void updatePoints()   {
@@ -530,6 +539,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             int tileIndex = objectTiles.indexOf(currentTile);
             int addedPoints = objectTypes.get(tileIndex).getPoints();
             points = points + addedPoints;
+            pointLabels.get(1).setText(Integer.toString(points)); // updating points on the GUI
         }
     }
 
@@ -544,6 +554,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             if (playerTile == enemyTile) {
                 int hitPoints = enemy.getHitPoints();
                 points = points - hitPoints;
+                pointLabels.get(1).setText(Integer.toString(points)); // updating points on the GUI
                 reInstantiate(); // re instantiate enemy and player's location if enemy catches a player
             }
         }
