@@ -5,5 +5,6 @@ public class Gargamel extends Enemy{
         this.setName("Gargamel");
         this.setType("Enemy");
         this.setSteps(2);
+        this.setHitPoints(15);
     }
 }

@@ -5,5 +5,6 @@ public class Azman extends Enemy{
         this.setName("Azman");
         this.setType("Enemy");
         this.setSteps(1);
+        this.setHitPoints(5);
     }
 }

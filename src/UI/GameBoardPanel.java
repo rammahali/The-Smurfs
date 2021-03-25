@@ -1,6 +1,7 @@
 package UI;
 
 import Core.*;
+import Core.Object;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,6 +20,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     private JLabel pointsLabel = new JLabel();
     private int points = 0;
     private ArrayList<Tile> objectTiles = new ArrayList<>();
+    private ArrayList<Object> objectTypes = new ArrayList<>();
     private ArrayList<Enemy> enemies = new ArrayList<>();
     private Timer goldTimer;
     private Timer mushroomTimer;
@@ -211,8 +213,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         board[10][3].setText("D");
         board[10][3].setBackground(Color.DARK_GRAY);
         board[10][3].setIsWall(true);
-        //testing parsing output :
-        System.out.print(enemyData);
+
         return enemyData;
     }
 
@@ -250,6 +251,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 board[x][y].setIcon(getIcon("gold"));
                 board[x][y].setEnabled(true);
                 objectTiles.add(board[x][y]);
+                objectTypes.add(new Gold());
                 drawnGold++;
             }
         }
@@ -271,6 +273,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 board[x][y].setIcon(getIcon("mushroom"));
                 board[x][y].setEnabled(true);
                 objectTiles.add(board[x][y]);
+                objectTypes.add(new Mushroom());
                 drawnMushroom++;
             }
         }
@@ -492,6 +495,51 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
     }
 
+    private void gameLoop(){
+        //Todo: add getShortestPath method here
+        for (Enemy enemy : enemies) {
+          //  moveEnemy(enemy);
+        }
+         moveEnemy(enemies.get(1)); // for testing only.
+        //Todo: add getShortestPath method here
+        updatePoints();
+        System.out.println(points); // will be replaced with Jlabel
+    }
+
+    private void updatePoints(){
+        didCatchObject(); // checks if the player is standing at an object's tile.
+        checkForEnemyCatch();
+    }
+
+    private void didCatchObject(){
+        int x = currentPlayer.getLocation().getX();
+        int y = currentPlayer.getLocation().getY();
+        Tile currentTile = board[x][y];
+
+        if(currentTile.HasGold() || currentTile.HasMushroom()){
+            // when new object is added the object's location is stored at objectTiles array , and it's type is stored at ObjectTypes array synchronously.
+            // so both arrayLists should  will have the same index for each object.
+            int tileIndex =objectTiles.indexOf(currentTile);
+            int addedPoints = objectTypes.get(tileIndex).getPoints();
+             points = points+addedPoints;
+        }
+    }
+
+    private void checkForEnemyCatch(){
+        int x= currentPlayer.getLocation().getX();
+        int y = currentPlayer.getLocation().getY();
+        Tile playerTile = board[x][y];
+        for (Enemy enemy : enemies) {
+            int enemyX = enemy.getLocation().getX();
+            int enemyY = enemy.getLocation().getY();
+            Tile enemyTile = board[enemyX][enemyY];
+            if (playerTile==enemyTile) {
+              int hitPoints = enemy.getHitPoints();
+              points= points-hitPoints;
+            }
+        }
+    }
+
     public Tile[][] getBoard() {
         return board;
     }
@@ -513,21 +561,20 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_LEFT:
                     movePlayerLeft();
-                    moveEnemy(enemies.get(1));
+                    gameLoop();
                     break;
                 case KeyEvent.VK_RIGHT:
                     movePlayerRight();
-                    moveEnemy(enemies.get(1));
+                    gameLoop();
                     break;
 
                 case KeyEvent.VK_UP:
                     movePlayerUp();
-                    moveEnemy(enemies.get(1));
-
+                    gameLoop();
                     break;
                 case KeyEvent.VK_DOWN:
                     movePlayerDown();
-                    moveEnemy(enemies.get(1));
+                    gameLoop();
                     break;
 
             }
