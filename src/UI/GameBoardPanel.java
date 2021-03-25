@@ -38,6 +38,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         this.setFocusable(true);
         this.addKeyListener(new MyKeyAdapter());
         populateBoard();
+        addPointsLabel();
         instantiate(playerCharacter, parseMap());
         instantiateRandomObjects();
         startGoldTimer(); // gold timer will trigger mushrooms timer after it finish
@@ -144,12 +145,15 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 this.add(board[i][j]);
             }
         }
-       for(int i=0;i<13;i++){
-           JLabel label = new JLabel();
-           pointLabels.add(label);
-           this.add(label);
-       }
-        pointLabels.get(0).setText("Points :");
+    }
+
+    private void addPointsLabel(){
+        for(int i=0;i<13;i++){
+            JLabel label = new JLabel();
+            pointLabels.add(label);
+            this.add(label);
+        }
+        pointLabels.get(0).setText("Points: ");
         pointLabels.get(1).setText("0"); // initial points value
     }
 
