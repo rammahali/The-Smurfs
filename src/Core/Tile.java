@@ -6,7 +6,7 @@ public class Tile extends JButton implements Comparable<Tile> {
     private boolean hasGold;
     private boolean hasMushroom;
     private boolean isWall;
-    private int distance = Integer.MAX_VALUE; // ~= infinity
+    private int distance = -1; // ~= infinity
 
     public Tile() {
     }
@@ -46,6 +46,12 @@ public class Tile extends JButton implements Comparable<Tile> {
 
     @Override
     public int compareTo(Tile tile) {
+        if (this.distance == -1 && tile.distance > -1) {
+            return 1;
+        }
+        if (this.distance > -1 && tile.distance == -1) {
+            return -1;
+        }
         return Integer.compare(this.distance, tile.distance);
     }
 }

@@ -37,7 +37,7 @@ public class Tests {
         Tile tile3 = new Tile(); // distance == -1
 
         boolean equality;
-        equality = tile2.equals(tile3);
+        equality = tile2.compareTo(tile3) == 0;
 
         boolean biggerThan = tile1.compareTo(tile2) < 0;
         biggerThan &= tile2.compareTo(tile1) > 0;
