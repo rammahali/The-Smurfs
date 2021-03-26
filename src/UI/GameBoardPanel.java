@@ -462,37 +462,42 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
 
 
+
         while (movedSteps < steps) {
             // check all the possible movements :
             try {
                 //upper tile
                 if (board[x - 1][y].getBackground() == Color.CYAN) {
-                    destination = board[x - 1][y];
-                    enemy.getLocation().setX(x - 1);
+                    destination = shortestPath.get(0);
+                    shortestPath.remove(0);
+                    enemy.getLocation().setX(destination.getTileLocation().getX());
                 }
             } catch (Exception ignored) {
             }
             try {
                 // lower tile
                 if (board[x + 1][y].getBackground() == Color.CYAN) {
-                    destination = board[x + 1][y];
-                    enemy.getLocation().setX(x + 1);
+                    destination = shortestPath.get(0);
+                    shortestPath.remove(0);
+                    enemy.getLocation().setX(destination.getTileLocation().getX());
                 }
             } catch (Exception ignored) {
             }
             try {
                 // right tile
                 if (board[x][y + 1].getBackground() == Color.CYAN) {
-                    destination = board[x][y + 1];
-                    enemy.getLocation().setY(y + 1);
+                    destination = shortestPath.get(0);
+                    shortestPath.remove(0);
+                    enemy.getLocation().setY(destination.getTileLocation().getY());
                 }
             } catch (Exception ignored) {
             }
             try {
                 // left tile
                 if (board[x][y - 1].getBackground() == Color.CYAN) {
-                    destination = board[x][y - 1];
-                    enemy.getLocation().setY(y - 1);
+                    destination = shortestPath.get(0);
+                    shortestPath.remove(0);
+                    enemy.getLocation().setY(destination.getTileLocation().getY());
                 }
             } catch (Exception ignored) {
             }
@@ -630,7 +635,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     }
 
     public Tile getTile(Location location) {
-        return board[location.getY()][location.getX()];
+        return board[location.getX()][location.getY()];
     }
 
     public ArrayList<Tile> getNeighbours(Tile tile) {

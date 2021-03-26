@@ -2,6 +2,7 @@ package Core;
 
 import UI.GameBoardPanel;
 
+import java.awt.*;
 import java.util.Arrays;
 import java.util.PriorityQueue;
 
@@ -65,38 +66,45 @@ public abstract class Character {
         Tile[][] board = boardPanel.getBoard();
 
 
-        start.setDistance(0);
 
         // Minimum heap to store node with shortest distance
         PriorityQueue<Tile> unvisited = new PriorityQueue<>();
-
+        start.setDistance(0);
+        unvisited.add(start);
         // Add unvisited tiles to heap
         // O(n log n)
         for (Tile[] row : board) {
             for (Tile tile: row) {
-                tile.setDistance(-1);
-                unvisited.add(tile);
+                if (!tile.equals(start) && !tile.isWall()) {
+                    tile.setDistance(-1);
+                    unvisited.add(tile);
+                }
             }
         }
 
-        Tile closestTile = unvisited.poll();
+        Tile closestTile = null;
+        Tile tempTile = new Tile();
+        ArrayList<Tile> neighborTiles;
 
         // Calculate shortest path
         while (!unvisited.isEmpty()) {
             // defines tile with shortest distance and removes from heap
             closestTile = unvisited.poll();
-            ArrayList<Tile> neighborTiles = boardPanel.getNeighbours(closestTile);
+            neighborTiles = boardPanel.getNeighbours(closestTile);
             if (closestTile.equals(end)) {
                 break;
             }
-
             for (Tile neighborTile: neighborTiles) {
-                int newDistance = closestTile.getDistance() + 1;
-                if (newDistance < neighborTile.getDistance()) {
-                    neighborTile.setDistance(newDistance);
+                tempTile.setDistance(closestTile.getDistance() + 1);
+                if (tempTile.compareTo(neighborTile) < 0) {
+                    neighborTile.setDistance(tempTile.getDistance());
                     neighborTile.setPrevious(closestTile);
+                    // refresh minimum heap
+                    unvisited.remove(neighborTile);
+                    unvisited.add(neighborTile);
                 }
             }
+
         }
 
         ArrayList<Tile> shortestPath = new ArrayList<>();
@@ -105,9 +113,11 @@ public abstract class Character {
 
         while (previousTile != null) {
             shortestPath.add(previousTile);
+            previousTile.setBackground(Color.CYAN);
             previousTile = previousTile.getPrevious();
+
         }
-        
+
         return shortestPath;
 
     }
