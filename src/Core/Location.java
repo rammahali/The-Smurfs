@@ -9,6 +9,19 @@ public class Location{
         this.y = y;
     }
 
+    public Location plus(Location location) {
+        // returns two location objects' sum
+        return new Location(this.x + location.x, this.y + location.y);
+    }
+
+    @Override
+    public String toString() {
+        return "Location{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
+    }
+
     public int getX() {
         return x;
     }

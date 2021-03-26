@@ -1,10 +1,10 @@
 package Core;
 
-import UI.GameBoard;
 import UI.GameBoardPanel;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.awt.*;
+import java.util.Arrays;
+import java.util.PriorityQueue;
 
 import java.util.ArrayList;
 
@@ -65,29 +65,60 @@ public abstract class Character {
 
         Tile[][] board = boardPanel.getBoard();
 
+
+
+        // Minimum heap to store node with shortest distance
+        PriorityQueue<Tile> unvisited = new PriorityQueue<>();
         start.setDistance(0);
-
-        Queue<Tile> unvisited = new LinkedList<>();
-        ArrayList<Tile> shortestPath = new ArrayList<>();
-
-
-        // Set all distances to infinity
+        unvisited.add(start);
+        // Add unvisited tiles to heap
+        // O(n log n)
         for (Tile[] row : board) {
-            for (Tile tile : row) {
-                tile.setDistance(-1);
-                unvisited.add(tile);
+            for (Tile tile: row) {
+                if (!tile.equals(start) && !tile.isWall()) {
+                    tile.setDistance(-1);
+                    tile.setPrevious(null);
+                    unvisited.add(tile);
+                }
             }
         }
 
+        Tile closestTile = null;
+        Tile tempTile = new Tile();
+        ArrayList<Tile> neighborTiles;
+
+        // Calculate shortest path
         while (!unvisited.isEmpty()) {
-            // TODO: Dijkstra algorithm works here
+            // defines tile with shortest distance and removes from heap
+            closestTile = unvisited.poll();
+            neighborTiles = boardPanel.getNeighbours(closestTile);
+            if (closestTile.equals(end)) {
+                break;
+            }
+            for (Tile neighborTile: neighborTiles) {
+                tempTile.setDistance(closestTile.getDistance() + 1);
+                if (tempTile.compareTo(neighborTile) < 0) {
+                    neighborTile.setDistance(tempTile.getDistance());
+                    neighborTile.setPrevious(closestTile);
+                    // refresh minimum heap
+                    unvisited.remove(neighborTile);
+                    unvisited.add(neighborTile);
+                }
+            }
         }
 
+        ArrayList<Tile> shortestPath = new ArrayList<>();
 
-        // TODO: Check all adjacent tiles
-        //       Update distance value of tiles
-        //       Add to shortestPath
+        Tile previousTile = closestTile;
 
+        while (previousTile != null) {
+            shortestPath.add(previousTile);
+            previousTile.setBackground(Color.CYAN);
+            previousTile = previousTile.getPrevious();
+            if (previousTile.equals(start)) {
+                break;
+            }
+        }
 
         return shortestPath;
 

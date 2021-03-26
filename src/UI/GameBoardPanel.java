@@ -21,6 +21,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     private final ArrayList<Tile> objectTiles = new ArrayList<>();
     private final ArrayList<Object> objectTypes = new ArrayList<>();
     private final ArrayList<Enemy> enemies = new ArrayList<>();
+    private ArrayList<Tile> shortestPath;
     private ArrayList<String> enemyData = new ArrayList<>();
     private ArrayList<JLabel> pointLabels = new ArrayList<>();
     private Player currentPlayer;
@@ -42,7 +43,6 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         instantiate(playerCharacter, parseMap());
         instantiateRandomObjects();
         startGoldTimer(); // gold timer will trigger mushrooms timer after it finish
-        testFakeShortestPath();
     }
 
 
@@ -142,6 +142,8 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             for (int j = 0; j < 13; j++) {
                 board[i][j] = new Tile();
                 board[i][j].setEnabled(false);
+                board[i][j].setTileLocation(new Location(i, j));
+
                 this.add(board[i][j]);
             }
         }
@@ -364,8 +366,8 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 movedSteps++;
 
                 //TODO: ONLY FOR SHORT PATH AND ENEMY MOEVMENT TESTING , WILL BE REMOVED :
-                currentTile.setBackground(Color.cyan);
-                nextTile.setBackground(Color.cyan);
+//                currentTile.setBackground(Color.cyan);
+//                nextTile.setBackground(Color.cyan);
             } else
                 break;
         }
@@ -390,7 +392,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 currentPlayer.getLocation().setX(x + 1);
                 movedSteps++;
                 //TODO: ONLY FOR SHORT PATH AND ENEMY MOEVMENT TESTING , WILL BE REMOVED :
-                currentTile.setBackground(Color.cyan);
+//                currentTile.setBackground(Color.cyan);
             } else
                 break;
 
@@ -417,7 +419,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 movedSteps++;
 
                 //TODO: ONLY FOR SHORT PATH AND ENEMY MOEVMENT TESTING , WILL BE REMOVED :
-                currentTile.setBackground(Color.cyan);
+//                currentTile.setBackground(Color.cyan);
             } else
                 break;
         }
@@ -443,7 +445,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 movedSteps++;
 
                 //TODO: ONLY FOR SHORT PATH AND ENEMY MOEVMENT TESTING , WILL BE REMOVED :
-                currentTile.setBackground(Color.cyan);
+//                currentTile.setBackground(Color.cyan);
             } else
                 break;
         }
@@ -454,67 +456,47 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         int x = enemy.getLocation().getX();
         int y = enemy.getLocation().getY();
         int movedSteps = 0;
-        Tile currentTile;
-        Tile destination = board[x][y];
+        Tile currentTile = this.getTile(enemy.getLocation());
+        setShortestPath(enemy.getShortestPath(this, currentPlayer.getLocation()));
+
 
         while (movedSteps < steps) {
             // check all the possible movements :
-            try {
-                //upper tile
-                if (board[x - 1][y].getBackground() == Color.CYAN) {
-                    destination = board[x - 1][y];
-                    enemy.getLocation().setX(x - 1);
-                }
-            } catch (Exception ignored) {
-            }
-            try {
-                // lower tile
-                if (board[x + 1][y].getBackground() == Color.CYAN) {
-                    destination = board[x + 1][y];
-                    enemy.getLocation().setX(x + 1);
-                }
-            } catch (Exception ignored) {
-            }
-            try {
-                // right tile
-                if (board[x][y + 1].getBackground() == Color.CYAN) {
-                    destination = board[x][y + 1];
-                    enemy.getLocation().setY(y + 1);
-                }
-            } catch (Exception ignored) {
-            }
-            try {
-                // left tile
-                if (board[x][y - 1].getBackground() == Color.CYAN) {
-                    destination = board[x][y - 1];
-                    enemy.getLocation().setY(y - 1);
-                }
-            } catch (Exception ignored) {
-            }
-            currentTile = board[x][y];
-            currentTile.setEnabled(false);
-            currentTile.setIcon(null);
-            currentTile.setBackground(Color.white);
-            destination.setIcon(getIcon(enemy.getName()));
-            destination.setEnabled(true);
-            x = enemy.getLocation().getX();
-            y = enemy.getLocation().getX();
+            int last = shortestPath.size() - 1;
+
+            Tile destination = shortestPath.get(last);
+            shortestPath.remove(last);
+            enemy.setLocation(destination.getTileLocation());
+
             movedSteps++;
+        currentTile.setEnabled(false);
+        currentTile.setIcon(null);
+        currentTile.setBackground(Color.white);
+        destination.setIcon(getIcon(enemy.getName()));
+        destination.setEnabled(true);
         }
     }
 
 
     private void testFakeShortestPath() {
-        board[1][10].setBackground(Color.cyan);
-        board[1][9].setBackground(Color.cyan);
-        board[1][8].setBackground(Color.cyan);
-        board[1][7].setBackground(Color.cyan);
-        board[1][6].setBackground(Color.cyan);
-        board[2][6].setBackground(Color.cyan);
-        board[3][6].setBackground(Color.cyan);
-        board[4][6].setBackground(Color.cyan);
-        board[5][6].setBackground(Color.cyan);
+//        board[1][10].setBackground(Color.cyan);
+//        board[1][9].setBackground(Color.cyan);
+//        board[1][8].setBackground(Color.cyan);
+//        board[1][7].setBackground(Color.cyan);
+//        board[1][6].setBackground(Color.cyan);
+//        board[2][6].setBackground(Color.cyan);
+//        board[3][6].setBackground(Color.cyan);
+//        board[4][6].setBackground(Color.cyan);
+//        board[5][6].setBackground(Color.cyan);
 
+    }
+
+    private void refresh() {
+        if (this.shortestPath != null) {
+            for (Tile tile: this.shortestPath) {
+                tile.setBackground(Color.white);
+            }
+        }
     }
 
     private void gameLoop()  {
@@ -522,6 +504,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         for (Enemy enemy : enemies) {
             //  moveEnemy(enemy);
         }
+        refresh();
         moveEnemy(enemies.get(1)); // for testing only.
         //Todo: add getShortestPath method here
         updatePoints();
@@ -586,7 +569,15 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
     }
 
-    private void reInstantiateEnemyAtDoor(Enemy enemy ,String door){
+    public ArrayList<Tile> getShortestPath() {
+        return shortestPath;
+    }
+
+    public void setShortestPath(ArrayList<Tile> shortestPath) {
+        this.shortestPath = shortestPath;
+    }
+
+    private void reInstantiateEnemyAtDoor(Enemy enemy , String door){
         switch (door) {
             case "A":
                 board[0][3].setEnabled(true);
@@ -625,9 +616,29 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     }
 
     public Tile getTile(Location location) {
-        return board[location.getY()][location.getX()];
+        return board[location.getX()][location.getY()];
     }
 
+    public ArrayList<Tile> getNeighbours(Tile tile) {
+        Location[] neighborsLocations = {
+                new Location(0, 1),
+                new Location(0, -1),
+                new Location(-1, 0),
+                new Location(1, 0)
+        };
+        ArrayList<Tile> neighborTiles = new ArrayList<>();
+        for (Location location: neighborsLocations) {
+            try {
+                Tile neighborTile = getTile(tile.getTileLocation().plus(location));
+                if (!neighborTile.isWall()) {
+                    neighborTiles.add(neighborTile);
+                }
+            }
+            catch (ArrayIndexOutOfBoundsException ignored) {
+            }
+        }
+        return neighborTiles;
+    }
 
     public class MyKeyAdapter extends KeyAdapter {
 
