@@ -365,9 +365,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 currentPlayer.getLocation().setX(x - 1);
                 movedSteps++;
 
-                //TODO: ONLY FOR SHORT PATH AND ENEMY MOEVMENT TESTING , WILL BE REMOVED :
-//                currentTile.setBackground(Color.cyan);
-//                nextTile.setBackground(Color.cyan);
+
             } else
                 break;
         }
@@ -391,8 +389,6 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 nextTile.setEnabled(true);
                 currentPlayer.getLocation().setX(x + 1);
                 movedSteps++;
-                //TODO: ONLY FOR SHORT PATH AND ENEMY MOEVMENT TESTING , WILL BE REMOVED :
-//                currentTile.setBackground(Color.cyan);
             } else
                 break;
 
@@ -418,8 +414,6 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 currentPlayer.getLocation().setY(y + 1);
                 movedSteps++;
 
-                //TODO: ONLY FOR SHORT PATH AND ENEMY MOEVMENT TESTING , WILL BE REMOVED :
-//                currentTile.setBackground(Color.cyan);
             } else
                 break;
         }
@@ -444,8 +438,6 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 currentPlayer.getLocation().setY(y - 1);
                 movedSteps++;
 
-                //TODO: ONLY FOR SHORT PATH AND ENEMY MOEVMENT TESTING , WILL BE REMOVED :
-//                currentTile.setBackground(Color.cyan);
             } else
                 break;
         }
@@ -500,13 +492,12 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     }
 
     private void gameLoop()  {
-        //Todo: add getShortestPath method here
         for (Enemy enemy : enemies) {
-            //  moveEnemy(enemy);
+            // FIXME: Empty loop
+            // moveEnemy(enemy);
         }
         refresh();
         moveEnemy(enemies.get(1)); // for testing only.
-        //Todo: add getShortestPath method here
         updatePoints();
     }
 
