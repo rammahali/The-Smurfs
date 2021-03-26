@@ -2,11 +2,11 @@ package Core;
 
 import javax.swing.*;
 
-public class Tile extends JButton {
+public class Tile extends JButton implements Comparable<Tile> {
     private boolean hasGold;
     private boolean hasMushroom;
     private boolean isWall;
-    private int distance = -1; // -1 = infinity
+    private int distance = Integer.MAX_VALUE; // ~= infinity
 
     public Tile() {
     }
@@ -41,5 +41,11 @@ public class Tile extends JButton {
 
     public void setDistance(int distance) {
         this.distance = distance;
+    }
+
+
+    @Override
+    public int compareTo(Tile tile) {
+        return Integer.compare(this.distance, tile.distance);
     }
 }

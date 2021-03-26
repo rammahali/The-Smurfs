@@ -1,10 +1,9 @@
 package Core;
 
-import UI.GameBoard;
 import UI.GameBoardPanel;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.Arrays;
+import java.util.PriorityQueue;
 
 import java.util.ArrayList;
 
@@ -67,20 +66,20 @@ public abstract class Character {
 
         start.setDistance(0);
 
-        Queue<Tile> unvisited = new LinkedList<>();
+        // Minimum heap to store node with shortest distance
+        PriorityQueue<Tile> unvisited = new PriorityQueue<>();
         ArrayList<Tile> shortestPath = new ArrayList<>();
 
-
-        // Set all distances to infinity
+        // Add unvisited tiles to heap
+        // O(n log n)
         for (Tile[] row : board) {
-            for (Tile tile : row) {
-                tile.setDistance(-1);
-                unvisited.add(tile);
-            }
+            unvisited.addAll(Arrays.asList(row));
         }
+
 
         while (!unvisited.isEmpty()) {
             // TODO: Dijkstra algorithm works here
+            break;
         }
 
 
