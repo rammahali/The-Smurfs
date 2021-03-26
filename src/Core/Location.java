@@ -14,6 +14,14 @@ public class Location{
         return new Location(this.x + location.x, this.y + location.y);
     }
 
+    @Override
+    public String toString() {
+        return "Location{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
+    }
+
     public int getX() {
         return x;
     }
