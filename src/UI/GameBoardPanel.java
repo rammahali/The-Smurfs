@@ -21,6 +21,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     private final ArrayList<Tile> objectTiles = new ArrayList<>();
     private final ArrayList<Object> objectTypes = new ArrayList<>();
     private final ArrayList<Enemy> enemies = new ArrayList<>();
+    private ArrayList<Tile> shortestPath;
     private ArrayList<String> enemyData = new ArrayList<>();
     private ArrayList<JLabel> pointLabels = new ArrayList<>();
     private Player currentPlayer;
@@ -42,7 +43,6 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         instantiate(playerCharacter, parseMap());
         instantiateRandomObjects();
         startGoldTimer(); // gold timer will trigger mushrooms timer after it finish
-        testFakeShortestPath();
     }
 
 
@@ -456,60 +456,24 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         int x = enemy.getLocation().getX();
         int y = enemy.getLocation().getY();
         int movedSteps = 0;
-        Tile currentTile;
-        Tile destination = board[x][y];
-        ArrayList<Tile> shortestPath = enemy.getShortestPath(this, currentPlayer.getLocation());
-
-
+        Tile currentTile = this.getTile(enemy.getLocation());
+        setShortestPath(enemy.getShortestPath(this, currentPlayer.getLocation()));
 
 
         while (movedSteps < steps) {
             // check all the possible movements :
-            try {
-                //upper tile
-                if (board[x - 1][y].getBackground() == Color.CYAN) {
-                    destination = shortestPath.get(0);
-                    shortestPath.remove(0);
-                    enemy.getLocation().setX(destination.getTileLocation().getX());
-                }
-            } catch (Exception ignored) {
-            }
-            try {
-                // lower tile
-                if (board[x + 1][y].getBackground() == Color.CYAN) {
-                    destination = shortestPath.get(0);
-                    shortestPath.remove(0);
-                    enemy.getLocation().setX(destination.getTileLocation().getX());
-                }
-            } catch (Exception ignored) {
-            }
-            try {
-                // right tile
-                if (board[x][y + 1].getBackground() == Color.CYAN) {
-                    destination = shortestPath.get(0);
-                    shortestPath.remove(0);
-                    enemy.getLocation().setY(destination.getTileLocation().getY());
-                }
-            } catch (Exception ignored) {
-            }
-            try {
-                // left tile
-                if (board[x][y - 1].getBackground() == Color.CYAN) {
-                    destination = shortestPath.get(0);
-                    shortestPath.remove(0);
-                    enemy.getLocation().setY(destination.getTileLocation().getY());
-                }
-            } catch (Exception ignored) {
-            }
-            currentTile = board[x][y];
-            currentTile.setEnabled(false);
-            currentTile.setIcon(null);
-            currentTile.setBackground(Color.white);
-            destination.setIcon(getIcon(enemy.getName()));
-            destination.setEnabled(true);
-            x = enemy.getLocation().getX();
-            y = enemy.getLocation().getX();
+            int last = shortestPath.size() - 1;
+
+            Tile destination = shortestPath.get(last);
+            shortestPath.remove(last);
+            enemy.setLocation(destination.getTileLocation());
+
             movedSteps++;
+        currentTile.setEnabled(false);
+        currentTile.setIcon(null);
+        currentTile.setBackground(Color.white);
+        destination.setIcon(getIcon(enemy.getName()));
+        destination.setEnabled(true);
         }
     }
 
@@ -527,11 +491,20 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
     }
 
+    private void refresh() {
+        if (this.shortestPath != null) {
+            for (Tile tile: this.shortestPath) {
+                tile.setBackground(Color.white);
+            }
+        }
+    }
+
     private void gameLoop()  {
         //Todo: add getShortestPath method here
         for (Enemy enemy : enemies) {
             //  moveEnemy(enemy);
         }
+        refresh();
         moveEnemy(enemies.get(1)); // for testing only.
         //Todo: add getShortestPath method here
         updatePoints();
@@ -596,7 +569,15 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
     }
 
-    private void reInstantiateEnemyAtDoor(Enemy enemy ,String door){
+    public ArrayList<Tile> getShortestPath() {
+        return shortestPath;
+    }
+
+    public void setShortestPath(ArrayList<Tile> shortestPath) {
+        this.shortestPath = shortestPath;
+    }
+
+    private void reInstantiateEnemyAtDoor(Enemy enemy , String door){
         switch (door) {
             case "A":
                 board[0][3].setEnabled(true);

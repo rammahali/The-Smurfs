@@ -77,6 +77,7 @@ public abstract class Character {
             for (Tile tile: row) {
                 if (!tile.equals(start) && !tile.isWall()) {
                     tile.setDistance(-1);
+                    tile.setPrevious(null);
                     unvisited.add(tile);
                 }
             }
@@ -104,7 +105,6 @@ public abstract class Character {
                     unvisited.add(neighborTile);
                 }
             }
-
         }
 
         ArrayList<Tile> shortestPath = new ArrayList<>();
@@ -115,7 +115,9 @@ public abstract class Character {
             shortestPath.add(previousTile);
             previousTile.setBackground(Color.CYAN);
             previousTile = previousTile.getPrevious();
-
+            if (previousTile.equals(start)) {
+                break;
+            }
         }
 
         return shortestPath;
