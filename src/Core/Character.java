@@ -69,27 +69,45 @@ public abstract class Character {
 
         // Minimum heap to store node with shortest distance
         PriorityQueue<Tile> unvisited = new PriorityQueue<>();
-        ArrayList<Tile> shortestPath = new ArrayList<>();
 
         // Add unvisited tiles to heap
         // O(n log n)
         for (Tile[] row : board) {
-            unvisited.addAll(Arrays.asList(row));
+            for (Tile tile: row) {
+                tile.setDistance(-1);
+                unvisited.add(tile);
+            }
         }
 
+        Tile closestTile = unvisited.poll();
 
+        // Calculate shortest path
         while (!unvisited.isEmpty()) {
-            // TODO: Dijkstra algorithm works here
-            break;
+            // defines tile with shortest distance and removes from heap
+            closestTile = unvisited.poll();
+            ArrayList<Tile> neighborTiles = boardPanel.getNeighbours(closestTile);
+            if (closestTile.equals(end)) {
+                break;
+            }
 
+            for (Tile neighborTile: neighborTiles) {
+                int newDistance = closestTile.getDistance() + 1;
+                if (newDistance < neighborTile.getDistance()) {
+                    neighborTile.setDistance(newDistance);
+                    neighborTile.setPrevious(closestTile);
+                }
+            }
         }
 
+        ArrayList<Tile> shortestPath = new ArrayList<>();
 
-        // TODO: Check all adjacent tiles
-        //       Update distance value of tiles
-        //       Add to shortestPath
+        Tile previousTile = closestTile;
 
-
+        while (previousTile != null) {
+            shortestPath.add(previousTile);
+            previousTile = previousTile.getPrevious();
+        }
+        
         return shortestPath;
 
     }
