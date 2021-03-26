@@ -1,12 +1,14 @@
 package Core;
 
 import javax.swing.*;
+import java.util.ArrayList;
 
 public class Tile extends JButton implements Comparable<Tile> {
     private boolean hasGold;
     private boolean hasMushroom;
     private boolean isWall;
     private int distance = -1; // ~= infinity
+    private Tile previous;
 
     public Tile() {
     }
@@ -43,6 +45,13 @@ public class Tile extends JButton implements Comparable<Tile> {
         this.distance = distance;
     }
 
+    public Tile getPrevious() {
+        return previous;
+    }
+
+    public void setPrevious(Tile previous) {
+        this.previous = previous;
+    }
 
     @Override
     public int compareTo(Tile tile) {
