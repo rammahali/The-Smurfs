@@ -142,6 +142,8 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             for (int j = 0; j < 13; j++) {
                 board[i][j] = new Tile();
                 board[i][j].setEnabled(false);
+                board[i][j].setTileLocation(new Location(i, j));
+
                 this.add(board[i][j]);
             }
         }
@@ -628,6 +630,23 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         return board[location.getY()][location.getX()];
     }
 
+    public ArrayList<Tile> getNeighbours(Tile tile) {
+        Location[] neighborsLocations = {
+                new Location(0, 1),
+                new Location(0, -1),
+                new Location(-1, 0),
+                new Location(1, 0)
+        };
+        ArrayList<Tile> neighborTiles = new ArrayList<>();
+        for (Location location: neighborsLocations) {
+            try {
+                neighborTiles.add(getTile(tile.getTileLocation().plus(location)));
+            }
+            catch (ArrayIndexOutOfBoundsException ignored) {
+            }
+        }
+        return neighborTiles;
+    }
 
     public class MyKeyAdapter extends KeyAdapter {
 

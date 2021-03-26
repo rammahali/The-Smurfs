@@ -3,6 +3,8 @@ package Tests;
 import UI.*;
 import Core.*;
 
+import java.util.ArrayList;
+
 public class Tests {
 
 
@@ -12,8 +14,8 @@ public class Tests {
     public void testAll() {
         testHeap();
         System.out.println(testTileComparator());
+        System.out.println(testTileNeighbors());
     }
-
 
 
     public void testHeap() {
@@ -30,6 +32,23 @@ public class Tests {
         catch (Exception ignored) {
         }
     }
+
+    public boolean testTileNeighbors() {
+        Gargamel gargamel = new Gargamel();
+        gargamel.setLocation(new Location(3, 5));
+        LazySmurf lazySmurf = new LazySmurf();
+        try {
+            GameBoardPanel boardPanel = new GameBoardPanel(lazySmurf);
+            boardPanel.getTile(new Location(0, 5)).setDistance(4);
+            boardPanel.getTile(new Location(7, 1)).setDistance(19);
+            ArrayList<Tile> neighbours = boardPanel.getNeighbours(boardPanel.getTile(new Location(0, 4)));
+            return neighbours.size() == 3;
+        }
+        catch (Exception ignored) {
+            return false;
+        }
+    }
+
     public boolean testTileComparator() {
         Tile tile1 = new Tile();
         tile1.setDistance(5);

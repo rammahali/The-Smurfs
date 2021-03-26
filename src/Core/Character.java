@@ -64,6 +64,7 @@ public abstract class Character {
 
         Tile[][] board = boardPanel.getBoard();
 
+
         start.setDistance(0);
 
         // Minimum heap to store node with shortest distance
@@ -80,6 +81,7 @@ public abstract class Character {
         while (!unvisited.isEmpty()) {
             // TODO: Dijkstra algorithm works here
             break;
+
         }
 
 
