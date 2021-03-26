@@ -41,7 +41,7 @@ public class Tests {
             GameBoardPanel boardPanel = new GameBoardPanel(lazySmurf);
             boardPanel.getTile(new Location(0, 5)).setDistance(4);
             boardPanel.getTile(new Location(7, 1)).setDistance(19);
-            ArrayList<Tile> neighbours = boardPanel.getNeighbours(boardPanel.getTile(new Location(0, 4)));
+            ArrayList<Tile> neighbours = boardPanel.getNeighbours(boardPanel.getTile(new Location(1, 3)));
             return neighbours.size() == 3;
         }
         catch (Exception ignored) {

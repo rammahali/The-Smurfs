@@ -366,8 +366,8 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 movedSteps++;
 
                 //TODO: ONLY FOR SHORT PATH AND ENEMY MOEVMENT TESTING , WILL BE REMOVED :
-                currentTile.setBackground(Color.cyan);
-                nextTile.setBackground(Color.cyan);
+//                currentTile.setBackground(Color.cyan);
+//                nextTile.setBackground(Color.cyan);
             } else
                 break;
         }
@@ -392,7 +392,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 currentPlayer.getLocation().setX(x + 1);
                 movedSteps++;
                 //TODO: ONLY FOR SHORT PATH AND ENEMY MOEVMENT TESTING , WILL BE REMOVED :
-                currentTile.setBackground(Color.cyan);
+//                currentTile.setBackground(Color.cyan);
             } else
                 break;
 
@@ -419,7 +419,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 movedSteps++;
 
                 //TODO: ONLY FOR SHORT PATH AND ENEMY MOEVMENT TESTING , WILL BE REMOVED :
-                currentTile.setBackground(Color.cyan);
+//                currentTile.setBackground(Color.cyan);
             } else
                 break;
         }
@@ -445,7 +445,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 movedSteps++;
 
                 //TODO: ONLY FOR SHORT PATH AND ENEMY MOEVMENT TESTING , WILL BE REMOVED :
-                currentTile.setBackground(Color.cyan);
+//                currentTile.setBackground(Color.cyan);
             } else
                 break;
         }
@@ -458,6 +458,9 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         int movedSteps = 0;
         Tile currentTile;
         Tile destination = board[x][y];
+        ArrayList<Tile> shortestPath = enemy.getShortestPath(this, currentPlayer.getLocation());
+
+
 
         while (movedSteps < steps) {
             // check all the possible movements :
@@ -507,15 +510,15 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
 
     private void testFakeShortestPath() {
-        board[1][10].setBackground(Color.cyan);
-        board[1][9].setBackground(Color.cyan);
-        board[1][8].setBackground(Color.cyan);
-        board[1][7].setBackground(Color.cyan);
-        board[1][6].setBackground(Color.cyan);
-        board[2][6].setBackground(Color.cyan);
-        board[3][6].setBackground(Color.cyan);
-        board[4][6].setBackground(Color.cyan);
-        board[5][6].setBackground(Color.cyan);
+//        board[1][10].setBackground(Color.cyan);
+//        board[1][9].setBackground(Color.cyan);
+//        board[1][8].setBackground(Color.cyan);
+//        board[1][7].setBackground(Color.cyan);
+//        board[1][6].setBackground(Color.cyan);
+//        board[2][6].setBackground(Color.cyan);
+//        board[3][6].setBackground(Color.cyan);
+//        board[4][6].setBackground(Color.cyan);
+//        board[5][6].setBackground(Color.cyan);
 
     }
 
@@ -640,7 +643,10 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         ArrayList<Tile> neighborTiles = new ArrayList<>();
         for (Location location: neighborsLocations) {
             try {
-                neighborTiles.add(getTile(tile.getTileLocation().plus(location)));
+                Tile neighborTile = getTile(tile.getTileLocation().plus(location));
+                if (!neighborTile.isWall()) {
+                    neighborTiles.add(neighborTile);
+                }
             }
             catch (ArrayIndexOutOfBoundsException ignored) {
             }

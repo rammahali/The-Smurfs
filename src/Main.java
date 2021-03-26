@@ -1,4 +1,5 @@
 import Tests.*;
+import UI.PlayerSelection;
 public class Main {
     public static void main(String[] args)  {
         Tests tests = new Tests();
@@ -8,6 +9,8 @@ public class Main {
         catch (Exception ignored) {
 
         }
+
+        new PlayerSelection().setVisible(true);
     }
 }
 
