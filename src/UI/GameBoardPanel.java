@@ -41,8 +41,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         addPointsLabel();
         instantiate(playerCharacter, parseMap());
         instantiateRandomObjects();
-        //startGoldTimer(); // gold timer will trigger mushrooms timer after it finish
-        //repeatRandomObjects();
+        showShortestPath();
     }
 
 
@@ -532,15 +531,23 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         }
     }
 
-    private void moveEnemy(Enemy enemy) {
+    private void showShortestPath() {
+        for (Enemy enemy: enemies) {
+            enemy.setShortestPath(this, currentPlayer.getLocation());
+        }
+    }
+
+    private void moveEnemy(String direction, Enemy enemy) {
         int steps = enemy.getSteps();
-        int x = enemy.getLocation().getX();
-        int y = enemy.getLocation().getY();
+
         int movedSteps = 0;
         // FIXME: nullpointerexception when no gap between enemy and player,
         //  and player moves to enemy
-        enemy.setShortestPath(this, currentPlayer.getLocation());
+        if (checkForEnemyCatch(direction, enemy)) {
+            return;
+        }
 
+        enemy.setShortestPath(this, currentPlayer.getLocation());
 
         while (movedSteps < steps) {
             // check all the possible movements :
@@ -553,11 +560,15 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             enemy.setLocation(destination.getTileLocation());
 
             movedSteps++;
+
             currentTile.setEnabled(false);
             currentTile.setIcon(null);
             currentTile.setBackground(Color.white);
             destination.setIcon(getIcon(enemy.getName()));
             destination.setEnabled(true);
+            if (checkForEnemyCatch(direction, enemy)) {
+                return;
+            }
         }
     }
 
@@ -568,19 +579,33 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             }
         }
     }
-
-    private void gameLoop()  {
+    private void movePlayer(String direction) {
+        switch (direction) {
+            case "up":
+                movePlayerUp();
+                break;
+            case "down":
+                movePlayerDown();
+                break;
+            case "left":
+                movePlayerLeft();
+                break;
+            case "right":
+                movePlayerRight();
+        }
+    }
+    private void gameLoop(String direction)  {
+        movePlayer(direction);
         for (Enemy enemy : enemies) {
             // FIXME: Empty loop
             refresh(enemy);
-            moveEnemy(enemy);
+            moveEnemy(direction, enemy);
         }
         updatePoints();
     }
 
     private void updatePoints()   {
         didCatchObject(); // checks if the player is standing at an object's tile.
-        checkForEnemyCatch();
     }
 
     private void didCatchObject() {
@@ -598,34 +623,29 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         }
     }
 
-    private void checkForEnemyCatch()   {
+    private boolean checkForEnemyCatch(String direction, Enemy enemy)   {
         int x = currentPlayer.getLocation().getX();
         int y = currentPlayer.getLocation().getY();
         Tile playerTile = board[x][y];
-        for (Enemy enemy : enemies) {
-            int enemyX = enemy.getLocation().getX();
-            int enemyY = enemy.getLocation().getY();
-            Tile enemyTile = board[enemyX][enemyY];
-            if (playerTile == enemyTile) {
-                int hitPoints = enemy.getHitPoints();
-                points = points - hitPoints;
-                pointLabels.get(1).setText(Integer.toString(points)); // updating points on the GUI
-                reInstantiate(); // re instantiate enemy and player's location if enemy catches a player
-            }
+        int enemyX = enemy.getLocation().getX();
+        int enemyY = enemy.getLocation().getY();
+        Tile enemyTile = board[enemyX][enemyY];
+        if (playerTile == enemyTile) {
+            int hitPoints = enemy.getHitPoints();
+            points = points - hitPoints;
+            pointLabels.get(1).setText(Integer.toString(points)); // updating points on the GUI
+            reInstantiate(enemy); // re instantiate enemy and player's location if enemy catches a player
+            return true;
         }
+        return false;
     }
 
-    private void reInstantiate(){
-        for (Enemy enemy : enemies) {
-            int enemyX = enemy.getLocation().getX();
-            int enemyY = enemy.getLocation().getY();
-            Tile enemyTile = board[enemyX][enemyY];
-            enemyTile.setBackground(Color.white);
-            enemyTile.setIcon(null);
-            enemyTile.setEnabled(false);
-            int enemyDoorIndex = enemyData.indexOf(enemy.getName())+1; // every door is stored after it's enemy's name
-            reInstantiateEnemyAtDoor(enemy,enemyData.get(enemyDoorIndex));
-        }
+    private void reInstantiate(Enemy enemy){
+        int enemyX = enemy.getLocation().getX();
+        int enemyY = enemy.getLocation().getY();
+        int enemyDoorIndex = enemyData.indexOf(enemy.getName())+1; // every door is stored after it's enemy's name
+        reInstantiateEnemyAtDoor(enemy,enemyData.get(enemyDoorIndex));
+
 
         int x =currentPlayer.getLocation().getX();
         int y =currentPlayer.getLocation().getY();
@@ -633,6 +653,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         currentPlayerTile.setBackground(Color.white);
         currentPlayerTile.setIcon(getIcon(currentPlayer.getName()));
         currentPlayerTile.setEnabled(true);
+        enemy.setShortestPath(this, currentPlayer.getLocation());
 
     }
 
@@ -667,31 +688,27 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     }
 
     private void checkGameLoop(String direction){
+        boolean run = false;
         switch (direction){
             case "up" :
                 Tile upperTile = board[currentPlayer.getLocation().getX()-1][currentPlayer.getLocation().getY()];
-                if(!upperTile.isWall()){
-                    gameLoop();
-                }
+                run = !upperTile.isWall();
                 break;
 
             case "down" :
                 Tile lowerTile = board[currentPlayer.getLocation().getX()+1][currentPlayer.getLocation().getY()];
-                if(!lowerTile.isWall()){
-                    gameLoop();
-                }
+                run = !lowerTile.isWall();
                 break;
             case "left" :
                 Tile leftTile = board[currentPlayer.getLocation().getX()][currentPlayer.getLocation().getY()-1];
-                if(!leftTile.isWall()){
-                    gameLoop();
-                }
+                run = !leftTile.isWall();
                 break;
             case "right":
                 Tile rightTile = board[currentPlayer.getLocation().getX()][currentPlayer.getLocation().getY()+1];
-                if(!rightTile.isWall()){
-                    gameLoop();
-                }
+                run = !rightTile.isWall();
+        }
+        if (run) {
+            gameLoop(direction);
         }
     }
 
@@ -737,20 +754,16 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_LEFT:
                     checkGameLoop("left");
-                    movePlayerLeft();
                     break;
                 case KeyEvent.VK_RIGHT:
                     checkGameLoop("right");
-                    movePlayerRight();
                     break;
 
                 case KeyEvent.VK_UP:
                     checkGameLoop("up");
-                    movePlayerUp();
                     break;
                 case KeyEvent.VK_DOWN:
                     checkGameLoop("down");
-                    movePlayerDown();
                     break;
 
             }
