@@ -448,12 +448,15 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         int x = enemy.getLocation().getX();
         int y = enemy.getLocation().getY();
         int movedSteps = 0;
-        Tile currentTile = this.getTile(enemy.getLocation());
+        // FIXME: nullpointerexception when no gap between enemy and player,
+        //  and player moves to enemy
         enemy.setShortestPath(this, currentPlayer.getLocation());
 
 
         while (movedSteps < steps) {
             // check all the possible movements :
+            Tile currentTile = this.getTile(enemy.getLocation());
+
             int last = enemy.getShortestPath().size() - 1;
 
             Tile destination = enemy.getShortestPath().get(last);
@@ -461,11 +464,11 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             enemy.setLocation(destination.getTileLocation());
 
             movedSteps++;
-        currentTile.setEnabled(false);
-        currentTile.setIcon(null);
-        currentTile.setBackground(Color.white);
-        destination.setIcon(getIcon(enemy.getName()));
-        destination.setEnabled(true);
+            currentTile.setEnabled(false);
+            currentTile.setIcon(null);
+            currentTile.setBackground(Color.white);
+            destination.setIcon(getIcon(enemy.getName()));
+            destination.setEnabled(true);
         }
     }
 
@@ -483,8 +486,6 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             refresh(enemy);
             moveEnemy(enemy);
         }
-//        refresh(enemies.get(1));
-//        moveEnemy(enemies.get(1)); // for testing only.
         updatePoints();
     }
 
