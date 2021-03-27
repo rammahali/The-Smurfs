@@ -1,7 +1,6 @@
 package Core;
 
 import javax.swing.*;
-import java.util.ArrayList;
 
 public class Tile extends JButton implements Comparable<Tile> {
     private boolean hasGold;
@@ -10,7 +9,7 @@ public class Tile extends JButton implements Comparable<Tile> {
     private int distance = -1; // ~= infinity
     private Tile previous;
     private Location tileLocation;
-    private ArrayList<Character> paths = new ArrayList<>(); // Stores characters with path over this tile
+    private int paths = 0; // number of paths that cross this tile
 
     public Tile() {
     }
@@ -31,8 +30,8 @@ public class Tile extends JButton implements Comparable<Tile> {
         this.hasMushroom = hasMushroom;
     }
 
-    public boolean isWall() {
-        return isWall;
+    public boolean isNotWall() {
+        return !isWall;
     }
 
     public void setIsWall(boolean wall) {
@@ -63,12 +62,16 @@ public class Tile extends JButton implements Comparable<Tile> {
         this.tileLocation = location;
     }
 
-    public ArrayList<Character> getPaths() {
+    public int getPaths() {
         return paths;
     }
 
-    public void setPaths(ArrayList<Character> paths) {
+    public void setPaths(int paths) {
         this.paths = paths;
+    }
+
+    public void incrementPaths() {
+        paths++;
     }
 
     @Override
