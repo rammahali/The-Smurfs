@@ -1,6 +1,7 @@
 package UI;
 
 import Core.*;
+import Core.Character;
 import Core.Object;
 
 import javax.swing.*;
@@ -20,7 +21,6 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     private final ArrayList<Tile> objectTiles = new ArrayList<>();
     private final ArrayList<Object> objectTypes = new ArrayList<>();
     private final ArrayList<Enemy> enemies = new ArrayList<>();
-    private ArrayList<Tile> shortestPath;
     private ArrayList<String> enemyData = new ArrayList<>();
     private ArrayList<JLabel> pointLabels = new ArrayList<>();
     private Player currentPlayer;
@@ -537,44 +537,33 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         int x = enemy.getLocation().getX();
         int y = enemy.getLocation().getY();
         int movedSteps = 0;
-        Tile currentTile = this.getTile(enemy.getLocation());
-        setShortestPath(enemy.getShortestPath(this, currentPlayer.getLocation()));
+        // FIXME: nullpointerexception when no gap between enemy and player,
+        //  and player moves to enemy
+        enemy.setShortestPath(this, currentPlayer.getLocation());
 
 
         while (movedSteps < steps) {
             // check all the possible movements :
-            int last = shortestPath.size() - 1;
+            Tile currentTile = this.getTile(enemy.getLocation());
 
-            Tile destination = shortestPath.get(last);
-            shortestPath.remove(last);
+            int last = enemy.getShortestPath().size() - 1;
+
+            Tile destination = enemy.getShortestPath().get(last);
+            enemy.getShortestPath().remove(last);
             enemy.setLocation(destination.getTileLocation());
 
             movedSteps++;
-        currentTile.setEnabled(false);
-        currentTile.setIcon(null);
-        currentTile.setBackground(Color.white);
-        destination.setIcon(getIcon(enemy.getName()));
-        destination.setEnabled(true);
+            currentTile.setEnabled(false);
+            currentTile.setIcon(null);
+            currentTile.setBackground(Color.white);
+            destination.setIcon(getIcon(enemy.getName()));
+            destination.setEnabled(true);
         }
     }
 
-
-    private void testFakeShortestPath() {
-//        board[1][10].setBackground(Color.cyan);
-//        board[1][9].setBackground(Color.cyan);
-//        board[1][8].setBackground(Color.cyan);
-//        board[1][7].setBackground(Color.cyan);
-//        board[1][6].setBackground(Color.cyan);
-//        board[2][6].setBackground(Color.cyan);
-//        board[3][6].setBackground(Color.cyan);
-//        board[4][6].setBackground(Color.cyan);
-//        board[5][6].setBackground(Color.cyan);
-
-    }
-
-    private void refresh() {
-        if (this.shortestPath != null) {
-            for (Tile tile: this.shortestPath) {
+    private void refresh(Character character) {
+        if (character.getShortestPath() != null) {
+            for (Tile tile: character.getShortestPath()) {
                 tile.setBackground(Color.white);
             }
         }
@@ -583,10 +572,9 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     private void gameLoop()  {
         for (Enemy enemy : enemies) {
             // FIXME: Empty loop
-            // moveEnemy(enemy);
+            refresh(enemy);
+            moveEnemy(enemy);
         }
-        refresh();
-        moveEnemy(enemies.get(1)); // for testing only.
         updatePoints();
     }
 
@@ -646,14 +634,6 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         currentPlayerTile.setIcon(getIcon(currentPlayer.getName()));
         currentPlayerTile.setEnabled(true);
 
-    }
-
-    public ArrayList<Tile> getShortestPath() {
-        return shortestPath;
-    }
-
-    public void setShortestPath(ArrayList<Tile> shortestPath) {
-        this.shortestPath = shortestPath;
     }
 
     private void reInstantiateEnemyAtDoor(Enemy enemy , String door){

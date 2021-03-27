@@ -27,7 +27,6 @@ public class Tests {
             GameBoardPanel boardPanel = new GameBoardPanel(lazySmurf);
             boardPanel.getBoard()[0][5].setDistance(4);
             boardPanel.getBoard()[7][1].setDistance(19);
-            gargamel.getShortestPath(boardPanel, lazySmurf.getLocation());
         }
         catch (Exception ignored) {
         }
