@@ -15,9 +15,11 @@ import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.Timer;
 
+// TODO: add gameover popup
+
 public class GameBoardPanel extends JPanel implements ActionListener {
     private Tile[][] board = new Tile[11][13];
-    private int points = 0;
+    private Integer points = 20;
     private final ArrayList<Tile> objectTiles = new ArrayList<>();
     private final ArrayList<Object> objectTypes = new ArrayList<>();
     private final ArrayList<Enemy> enemies = new ArrayList<>();
@@ -26,11 +28,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     private Player currentPlayer;
 
     public GameBoardPanel(Player playerCharacter) throws FileNotFoundException {
-        //TODO:
-        // Fix wall boundaries out of limit bug
-
         initialize(playerCharacter);
-
     }
 
 
@@ -155,7 +153,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             this.add(label);
         }
         pointLabels.get(0).setText("Points: ");
-        pointLabels.get(1).setText("0"); // initial points value
+        pointLabels.get(1).setText(this.points.toString()); // initial points value
     }
 
 
