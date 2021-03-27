@@ -247,8 +247,8 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     private void instantiateRandomObjects() {
         showRandomGold();
         showRandomMushroom();
-        initialGoldTimer();
-        initialMushroomTimer();
+        StartInitialGoldTimer();
+        StartInitialMushroomTimer();
     }
 
     private void showRandomGold() {
@@ -271,6 +271,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 drawnGold++;
             }
         }
+        rePaint();
     }
 
     private void showRandomMushroom() {
@@ -296,29 +297,29 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 drawnMushroom++;
             }
         }
+        rePaint();
     }
 
     private void repeatRandomObjects(){
         Random random = new Random();
         int randomInt = random.nextInt(2); // helper random number to show gold or mushroom.
-        System.out.println(randomInt);
         switch (randomInt){
             case 1 : // will show random gold
-                int Golddelay = random.nextInt(10); // after x seconds (0-10)
-                while (Golddelay==0){
-                    Golddelay = random.nextInt(10);
+                int goldDelay = random.nextInt(10); // after x seconds (0-10)
+                while (goldDelay==0){
+                    goldDelay = random.nextInt(10);
                 }
                 TimerTask showGold = new TimerTask() {
 
                     @Override
                     public void run() {
                         showRandomGold();
-                        repeatedGoldTimer(); // when gold timer finish executing repeatRandomObjects() will be recalled  withing gold timer task for infinite loop
+                        StartRepeatedGoldTimer(); // when gold timer finish executing repeatRandomObjects() will be recalled  withing gold timer task for infinite loop
                     }
                 };
 
-                Timer timer = new Timer();
-                timer.schedule(showGold,Golddelay*1000);
+                Timer goldTimer = new Timer();
+                goldTimer.schedule(showGold,goldDelay*1000);
                 break;
             case 0: // shows random mushroom
                 int mushroomDelay = random.nextInt(20); // after x seconds (1-20)
@@ -331,17 +332,17 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                     @Override
                     public void run() {
                         showRandomMushroom();
-                        repeatedMushroomTimer(); // when mushroom timer finish executing repeatRandomObjects() will be recalled  withing gold timer task for infinite loop
+                        StartRepeatedMushroomTimer(); // when mushroom timer finish executing repeatRandomObjects() will be recalled  withing gold timer task for infinite loop
                     }
                 };
 
-                Timer timer2 = new Timer();
-                timer2.schedule(showMushroom,mushroomDelay*1000);
+                Timer mushroomTimer = new Timer();
+                mushroomTimer.schedule(showMushroom,mushroomDelay*1000);
         }
     }
 
 
-    private void initialGoldTimer(){ // this method will only be called once (when the game starts)
+    private void StartInitialGoldTimer(){ // this method will only be called once (when the game starts)
         TimerTask hideGold = new TimerTask() {
 
             @Override
@@ -354,7 +355,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         timer.schedule(hideGold,5000);
     }
 
-    private void initialMushroomTimer(){ // this method will only be called once (when the game starts)
+    private void StartInitialMushroomTimer(){ // this method will only be called once (when the game starts)
         TimerTask hideGold = new TimerTask() {
 
             @Override
@@ -368,7 +369,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         timer.schedule(hideGold,7000);
     }
 
-    private void repeatedGoldTimer(){ //  this method is called whenever repeatRandomObjects() is called and when the timer task finish
+    private void StartRepeatedGoldTimer(){ //  this method is called whenever repeatRandomObjects() is called and when the timer task finish
         TimerTask hideGold = new TimerTask() { //  repeatRandomObjects() will be called again to insure the infinite loop
 
             @Override
@@ -382,7 +383,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         timer.schedule(hideGold,5000);
     }
 
-    private void repeatedMushroomTimer(){ //  this method is called whenever repeatRandomObjects() is called and when the timer task finish
+    private void StartRepeatedMushroomTimer(){ //  this method is called whenever repeatRandomObjects() is called and when the timer task finish
         TimerTask hideMushroom = new TimerTask() {//  repeatRandomObjects() will be called again to insure the infinite loop
 
             @Override
