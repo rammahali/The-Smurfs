@@ -6,6 +6,11 @@ public abstract class Object {
 
     public Object() {}
 
+    public Object(String type, int points) {
+        setType(type);
+        setPoints(points);
+    }
+
     public String getType() {
         return type;
     }

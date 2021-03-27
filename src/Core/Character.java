@@ -14,7 +14,7 @@ public abstract class Character {
     private int steps;
     private Location location;
     private ArrayList<Tile> shortestPath;
-    static int totalCharacters = 0;
+    private static int totalCharacters = 0;
 
     public Character() {
         id = totalCharacters;
