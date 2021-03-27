@@ -736,21 +736,21 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_LEFT:
-                    movePlayerLeft();
                     checkGameLoop("left");
+                    movePlayerLeft();
                     break;
                 case KeyEvent.VK_RIGHT:
-                    movePlayerRight();
                     checkGameLoop("right");
+                    movePlayerRight();
                     break;
 
                 case KeyEvent.VK_UP:
-                    movePlayerUp();
                     checkGameLoop("up");
+                    movePlayerUp();
                     break;
                 case KeyEvent.VK_DOWN:
-                    movePlayerDown();
                     checkGameLoop("down");
+                    movePlayerDown();
                     break;
 
             }
