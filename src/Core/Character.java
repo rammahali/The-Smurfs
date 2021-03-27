@@ -2,8 +2,6 @@ package Core;
 
 import UI.GameBoardPanel;
 
-import java.awt.*;
-import java.util.Arrays;
 import java.util.PriorityQueue;
 
 import java.util.ArrayList;
@@ -114,7 +112,6 @@ public abstract class Character {
 
         while (previousTile != null) {
             shortestPath.add(previousTile);
-            previousTile.setBackground(Color.CYAN);
             previousTile = previousTile.getPrevious();
             if (previousTile.equals(start)) {
                 break;
