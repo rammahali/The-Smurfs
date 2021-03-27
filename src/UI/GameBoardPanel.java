@@ -11,9 +11,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
+import java.util.Timer;
 
 public class GameBoardPanel extends JPanel implements ActionListener {
     private Tile[][] board = new Tile[11][13];
@@ -42,7 +41,8 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         addPointsLabel();
         instantiate(playerCharacter, parseMap());
         instantiateRandomObjects();
-        startGoldTimer(); // gold timer will trigger mushrooms timer after it finish
+        //startGoldTimer(); // gold timer will trigger mushrooms timer after it finish
+        //repeatRandomObjects();
     }
 
 
@@ -240,13 +240,15 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         //  mushrooms should be hidden 2 sec after gold.
-        hideGold(); // when the gold timer reach the limit (5 sec) gold will be hidden
-        startMushroomTimer(); // then it will trigger the mushroom timer which will last only for 2 sec after gold timer ends.
+       // hideGold(); // when the gold timer reach the limit (5 sec) gold will be hidden
+        //startMushroomTimer(); // then it will trigger the mushroom timer which will last only for 2 sec after gold timer ends.
     }
 
     private void instantiateRandomObjects() {
         showRandomGold();
         showRandomMushroom();
+        initialGoldTimer();
+        initialMushroomTimer();
     }
 
     private void showRandomGold() {
@@ -296,16 +298,102 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         }
     }
 
-    private void startGoldTimer() {
-        Timer goldTimer = new Timer(5000, this);
-        goldTimer.setRepeats(false);
-        goldTimer.start();
+    private void repeatRandomObjects(){
+        Random random = new Random();
+        int randomInt = random.nextInt(2); // helper random number to show gold or mushroom.
+        System.out.println(randomInt);
+        switch (randomInt){
+            case 1 : // will show random gold
+                int Golddelay = random.nextInt(10); // after x seconds (0-10)
+                while (Golddelay==0){
+                    Golddelay = random.nextInt(10);
+                }
+                TimerTask showGold = new TimerTask() {
+
+                    @Override
+                    public void run() {
+                        showRandomGold();
+                        repeatedGoldTimer(); // when gold timer finish executing repeatRandomObjects() will be recalled  withing gold timer task for infinite loop
+                    }
+                };
+
+                Timer timer = new Timer();
+                timer.schedule(showGold,Golddelay*1000);
+                break;
+            case 0: // shows random mushroom
+                int mushroomDelay = random.nextInt(20); // after x seconds (1-20)
+                while (mushroomDelay==0){
+                    mushroomDelay = random.nextInt(20);
+                }
+
+                TimerTask showMushroom = new TimerTask() {
+
+                    @Override
+                    public void run() {
+                        showRandomMushroom();
+                        repeatedMushroomTimer(); // when mushroom timer finish executing repeatRandomObjects() will be recalled  withing gold timer task for infinite loop
+                    }
+                };
+
+                Timer timer2 = new Timer();
+                timer2.schedule(showMushroom,mushroomDelay*1000);
+        }
     }
 
-    private void startMushroomTimer() {
-        Timer mushroomTimer = new Timer(2000, e -> hideMushroom());
-        mushroomTimer.setRepeats(false);
-        mushroomTimer.start();
+
+    private void initialGoldTimer(){ // this method will only be called once (when the game starts)
+        TimerTask hideGold = new TimerTask() {
+
+            @Override
+            public void run() {
+                hideGold();
+            }
+        };
+
+        Timer timer = new Timer();
+        timer.schedule(hideGold,5000);
+    }
+
+    private void initialMushroomTimer(){ // this method will only be called once (when the game starts)
+        TimerTask hideGold = new TimerTask() {
+
+            @Override
+            public void run() {
+                hideMushroom();
+                repeatRandomObjects(); // but it will trigger repeatRandomObjects()
+            }
+        };
+
+        Timer timer = new Timer();
+        timer.schedule(hideGold,7000);
+    }
+
+    private void repeatedGoldTimer(){ //  this method is called whenever repeatRandomObjects() is called and when the timer task finish
+        TimerTask hideGold = new TimerTask() { //  repeatRandomObjects() will be called again to insure the infinite loop
+
+            @Override
+            public void run() {
+                hideGold();
+                repeatRandomObjects(); // the infinite loop happens here
+            }
+        };
+
+        Timer timer = new Timer();
+        timer.schedule(hideGold,5000);
+    }
+
+    private void repeatedMushroomTimer(){ //  this method is called whenever repeatRandomObjects() is called and when the timer task finish
+        TimerTask hideMushroom = new TimerTask() {//  repeatRandomObjects() will be called again to insure the infinite loop
+
+            @Override
+            public void run() {
+                hideMushroom();
+                repeatRandomObjects(); // the infinite loop happens here
+            }
+        };
+
+        Timer timer = new Timer();
+        timer.schedule(hideMushroom,7000);
     }
 
     private void hideGold() {
@@ -539,24 +627,23 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     }
 
     private void reInstantiate(){
-        int x =currentPlayer.getLocation().getX();
-        int y =currentPlayer.getLocation().getY();
-        Tile currentPlayerTile = board[x][y];
-        currentPlayerTile.setBackground(Color.white);
-        currentPlayerTile.setIcon(null);
-        currentPlayerTile.setEnabled(false);
-        instantiatePlayerCharacter(currentPlayer);
-
         for (Enemy enemy : enemies) {
-           int enemyX = enemy.getLocation().getX();
-           int enemyY = enemy.getLocation().getY();
-           Tile enemyTile = board[enemyX][enemyY];
+            int enemyX = enemy.getLocation().getX();
+            int enemyY = enemy.getLocation().getY();
+            Tile enemyTile = board[enemyX][enemyY];
             enemyTile.setBackground(Color.white);
             enemyTile.setIcon(null);
             enemyTile.setEnabled(false);
             int enemyDoorIndex = enemyData.indexOf(enemy.getName())+1; // every door is stored after it's enemy's name
             reInstantiateEnemyAtDoor(enemy,enemyData.get(enemyDoorIndex));
         }
+
+        int x =currentPlayer.getLocation().getX();
+        int y =currentPlayer.getLocation().getY();
+        Tile currentPlayerTile = board[x][y];
+        currentPlayerTile.setBackground(Color.white);
+        currentPlayerTile.setIcon(getIcon(currentPlayer.getName()));
+        currentPlayerTile.setEnabled(true);
 
     }
 
@@ -598,6 +685,35 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
     }
 
+    private void checkGameLoop(String direction){
+        switch (direction){
+            case "up" :
+                Tile upperTile = board[currentPlayer.getLocation().getX()-1][currentPlayer.getLocation().getY()];
+                if(!upperTile.isWall()){
+                    gameLoop();
+                }
+                break;
+
+            case "down" :
+                Tile lowerTile = board[currentPlayer.getLocation().getX()+1][currentPlayer.getLocation().getY()];
+                if(!lowerTile.isWall()){
+                    gameLoop();
+                }
+                break;
+            case "left" :
+                Tile leftTile = board[currentPlayer.getLocation().getX()][currentPlayer.getLocation().getY()-1];
+                if(!leftTile.isWall()){
+                    gameLoop();
+                }
+                break;
+            case "right":
+                Tile rightTile = board[currentPlayer.getLocation().getX()][currentPlayer.getLocation().getY()+1];
+                if(!rightTile.isWall()){
+                    gameLoop();
+                }
+        }
+    }
+
     public Tile[][] getBoard() {
         return board;
     }
@@ -631,6 +747,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         return neighborTiles;
     }
 
+
     public class MyKeyAdapter extends KeyAdapter {
 
         @Override
@@ -639,20 +756,20 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_LEFT:
                     movePlayerLeft();
-                    gameLoop();
+                    checkGameLoop("left");
                     break;
                 case KeyEvent.VK_RIGHT:
                     movePlayerRight();
-                    gameLoop();
+                    checkGameLoop("right");
                     break;
 
                 case KeyEvent.VK_UP:
                     movePlayerUp();
-                    gameLoop();
+                    checkGameLoop("up");
                     break;
                 case KeyEvent.VK_DOWN:
                     movePlayerDown();
-                    gameLoop();
+                    checkGameLoop("down");
                     break;
 
             }
