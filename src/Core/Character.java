@@ -3,7 +3,6 @@ package Core;
 import UI.GameBoardPanel;
 
 import java.awt.*;
-import java.util.Arrays;
 import java.util.PriorityQueue;
 
 import java.util.ArrayList;
@@ -15,8 +14,18 @@ public abstract class Character {
     private int steps;
     private Location location;
     private ArrayList<Tile> shortestPath;
+    private static int totalCharacters = 0;
 
     public Character() {
+        id = totalCharacters;
+        totalCharacters++;
+    }
+    public Character(String name, String type, int steps) {
+        setName(name);
+        setType(type);
+        setSteps(steps);
+        id = totalCharacters;
+        totalCharacters++;
     }
 
     public int getId() {
@@ -76,7 +85,7 @@ public abstract class Character {
         // O(n log n)
         for (Tile[] row : board) {
             for (Tile tile: row) {
-                if (!tile.equals(start) && !tile.isWall()) {
+                if (!tile.equals(start) && tile.isNotWall()) {
                     tile.setDistance(-1);
                     tile.setPrevious(null);
                     unvisited.add(tile);
@@ -114,7 +123,14 @@ public abstract class Character {
 
         while (previousTile != null) {
             shortestPath.add(previousTile);
-            previousTile.setBackground(Color.CYAN);
+            int paths = previousTile.getPaths();
+            if (paths == 0) {
+                previousTile.setBackground(Color.cyan);
+            }
+            else if (paths == 1) {
+                previousTile.setBackground(Color.orange);
+            }
+            previousTile.incrementPaths();
             previousTile = previousTile.getPrevious();
             if (previousTile.equals(start)) {
                 break;

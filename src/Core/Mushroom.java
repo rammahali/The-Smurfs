@@ -2,7 +2,6 @@ package Core;
 
 public class Mushroom extends Object{
     public Mushroom() {
-        this.setType("Mushroom");
-        this.setPoints(50);
+        super("Mushroom", 50);
     }
 }

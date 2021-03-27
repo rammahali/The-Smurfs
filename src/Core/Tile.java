@@ -9,6 +9,7 @@ public class Tile extends JButton implements Comparable<Tile> {
     private int distance = -1; // ~= infinity
     private Tile previous;
     private Location tileLocation;
+    private int paths = 0; // number of paths that cross this tile
 
     public Tile() {
     }
@@ -29,8 +30,8 @@ public class Tile extends JButton implements Comparable<Tile> {
         this.hasMushroom = hasMushroom;
     }
 
-    public boolean isWall() {
-        return isWall;
+    public boolean isNotWall() {
+        return !isWall;
     }
 
     public void setIsWall(boolean wall) {
@@ -59,6 +60,18 @@ public class Tile extends JButton implements Comparable<Tile> {
 
     public void setTileLocation(Location location) {
         this.tileLocation = location;
+    }
+
+    public int getPaths() {
+        return paths;
+    }
+
+    public void setPaths(int paths) {
+        this.paths = paths;
+    }
+
+    public void incrementPaths() {
+        paths++;
     }
 
     @Override

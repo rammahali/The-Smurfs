@@ -1,13 +1,10 @@
 package UI;
 
 import Core.*;
-import Core.Character;
 import Core.Object;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -15,22 +12,19 @@ import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.Timer;
 
-public class GameBoardPanel extends JPanel implements ActionListener {
+// TODO: add gameover popup
+
+public class GameBoardPanel extends JPanel {
     private Tile[][] board = new Tile[11][13];
-    private int points = 0;
+    private Integer points = 20;
     private final ArrayList<Tile> objectTiles = new ArrayList<>();
     private final ArrayList<Object> objectTypes = new ArrayList<>();
     private final ArrayList<Enemy> enemies = new ArrayList<>();
-    private ArrayList<String> enemyData = new ArrayList<>();
-    private ArrayList<JLabel> pointLabels = new ArrayList<>();
+    private final ArrayList<JLabel> pointLabels = new ArrayList<>();
     private Player currentPlayer;
 
     public GameBoardPanel(Player playerCharacter) throws FileNotFoundException {
-        //TODO:
-        // Fix wall boundaries out of limit bug
-
         initialize(playerCharacter);
-
     }
 
 
@@ -73,11 +67,11 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 board[0][3].setBackground(Color.white);
                 board[0][3].setIcon(getIcon(enemy));
                 if (enemy.equals("Gargamel")) {
-                    Gargamel gargamel = new Gargamel();
+                    Gargamel gargamel = new Gargamel(board[0][3]);
                     gargamel.setLocation(new Location(0, 3));
                     enemies.add(gargamel);
                 } else {
-                    Azman azman = new Azman();
+                    Azman azman = new Azman(board[0][3]);
                     azman.setLocation(new Location(0, 3));
                     enemies.add(azman);
                 }
@@ -89,11 +83,11 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 board[0][10].setBackground(Color.white);
                 board[0][10].setIcon(getIcon(enemy));
                 if (enemy.equals("Gargamel")) {
-                    Gargamel gargamel = new Gargamel();
+                    Gargamel gargamel = new Gargamel(board[0][10]);
                     gargamel.setLocation(new Location(0, 10));
                     enemies.add(gargamel);
                 } else {
-                    Azman azman = new Azman();
+                    Azman azman = new Azman(board[0][10]);
                     azman.setLocation(new Location(0, 10));
                     enemies.add(azman);
                 }
@@ -105,11 +99,11 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 board[5][0].setIcon(getIcon(enemy));
 
                 if (enemy.equals("Gargamel")) {
-                    Gargamel gargamel = new Gargamel();
+                    Gargamel gargamel = new Gargamel(board[5][0]);
                     gargamel.setLocation(new Location(5, 0));
                     enemies.add(gargamel);
                 } else {
-                    Azman azman = new Azman();
+                    Azman azman = new Azman(board[5][0]);
                     azman.setLocation(new Location(5, 0));
                     enemies.add(azman);
                 }
@@ -121,11 +115,11 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 board[10][3].setIcon(getIcon(enemy));
 
                 if (enemy.equals("Gargamel")) {
-                    Gargamel gargamel = new Gargamel();
+                    Gargamel gargamel = new Gargamel(board[10][3]);
                     gargamel.setLocation(new Location(10, 3));
                     enemies.add(gargamel);
                 } else {
-                    Azman azman = new Azman();
+                    Azman azman = new Azman(board[10][3]);
                     azman.setLocation(new Location(10, 3));
                     enemies.add(azman);
                 }
@@ -148,14 +142,14 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         }
     }
 
-    private void addPointsLabel(){
-        for(int i=0;i<13;i++){
+    private void addPointsLabel() {
+        for (int i = 0; i < 13; i++) {
             JLabel label = new JLabel();
             pointLabels.add(label);
             this.add(label);
         }
         pointLabels.get(0).setText("Points: ");
-        pointLabels.get(1).setText("0"); // initial points value
+        pointLabels.get(1).setText(this.points.toString()); // initial points value
     }
 
 
@@ -171,19 +165,16 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             String currentWord = mapScanner.next();
             if (currentWord.contains("Karakter") || currentWord.contains("karakter")) {
                 // get the enemy's character :
-                if (currentWord.contains("Gargamel") || currentWord.contains("gargamel")){
+                if (currentWord.contains("Gargamel") || currentWord.contains("gargamel")) {
                     enemyData.add("Gargamel");
-                   this.enemyData.add("Gargamel");}
-                else{
-                     enemyData.add("Azman");
-                     this.enemyData.add("Azman");
+                } else {
+                    enemyData.add("Azman");
                 }
 
                 // get the enemy's door :using "api" to ignore Kapi capitalaization
                 String[] doorToken = currentWord.split("api:");
                 String door = doorToken[1];
                 enemyData.add(door);
-                this.enemyData.add(door);
             }
 
             // if the current line doesn't contain "Karakter", then it should be "1" or "0" , 0 indicates for wall.
@@ -236,12 +227,6 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         return new ImageIcon(new ImageIcon("src/Images/" + iconName + ".png").getImage());
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        //  mushrooms should be hidden 2 sec after gold.
-       // hideGold(); // when the gold timer reach the limit (5 sec) gold will be hidden
-        //startMushroomTimer(); // then it will trigger the mushroom timer which will last only for 2 sec after gold timer ends.
-    }
 
     private void instantiateRandomObjects() {
         showRandomGold();
@@ -261,7 +246,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             x = random.nextInt(11);
             y = random.nextInt(13);
 
-            if (!board[x][y].isWall() && !objectTiles.contains(board[x][y]) && board[x][y] != playerTile) {
+            if (board[x][y].isNotWall() && !objectTiles.contains(board[x][y]) && board[x][y] != playerTile) {
                 board[x][y].setHasGold(true);
                 board[x][y].setIcon(getIcon("gold"));
                 board[x][y].setEnabled(true);
@@ -277,17 +262,17 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         Random random = new Random();
         int x;
         int y;
-        int MushroomCount=random.nextInt(20);
+        int MushroomCount = random.nextInt(20);
         int drawnMushroom = 0;
         Tile playerTile = board[5][6];
-        while (MushroomCount==0){  // assuring that mushroom count will never == 0
-            MushroomCount=random.nextInt(20);
+        while (MushroomCount == 0) {  // assuring that mushroom count will never == 0
+            MushroomCount = random.nextInt(20);
         }
         while (drawnMushroom < MushroomCount) {
             x = random.nextInt(11);
             y = random.nextInt(13);
 
-            if (!board[x][y].isWall() && !objectTiles.contains(board[x][y]) && board[x][y] != playerTile) {
+            if (board[x][y].isNotWall() && !objectTiles.contains(board[x][y]) && board[x][y] != playerTile) {
                 board[x][y].setHasMushroom(true);
                 board[x][y].setIcon(getIcon("mushroom"));
                 board[x][y].setEnabled(true);
@@ -299,13 +284,13 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         rePaint();
     }
 
-    private void repeatRandomObjects(){
+    private void repeatRandomObjects() {
         Random random = new Random();
         int randomInt = random.nextInt(2); // helper random number to show gold or mushroom.
-        switch (randomInt){
-            case 1 : // will show random gold
+        switch (randomInt) {
+            case 1: // will show random gold
                 int goldDelay = random.nextInt(10); // after x seconds (0-10)
-                while (goldDelay==0){
+                while (goldDelay == 0) {
                     goldDelay = random.nextInt(10);
                 }
                 TimerTask showGold = new TimerTask() {
@@ -318,11 +303,11 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 };
 
                 Timer goldTimer = new Timer();
-                goldTimer.schedule(showGold,goldDelay*1000);
+                goldTimer.schedule(showGold, goldDelay * 1000);
                 break;
             case 0: // shows random mushroom
                 int mushroomDelay = random.nextInt(20); // after x seconds (1-20)
-                while (mushroomDelay==0){
+                while (mushroomDelay == 0) {
                     mushroomDelay = random.nextInt(20);
                 }
 
@@ -336,12 +321,12 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 };
 
                 Timer mushroomTimer = new Timer();
-                mushroomTimer.schedule(showMushroom,mushroomDelay*1000);
+                mushroomTimer.schedule(showMushroom, mushroomDelay * 1000);
         }
     }
 
 
-    private void StartInitialGoldTimer(){ // this method will only be called once (when the game starts)
+    private void StartInitialGoldTimer() { // this method will only be called once (when the game starts)
         TimerTask hideGold = new TimerTask() {
 
             @Override
@@ -351,10 +336,10 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         };
 
         Timer timer = new Timer();
-        timer.schedule(hideGold,5000);
+        timer.schedule(hideGold, 5000);
     }
 
-    private void StartInitialMushroomTimer(){ // this method will only be called once (when the game starts)
+    private void StartInitialMushroomTimer() { // this method will only be called once (when the game starts)
         TimerTask hideGold = new TimerTask() {
 
             @Override
@@ -365,10 +350,10 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         };
 
         Timer timer = new Timer();
-        timer.schedule(hideGold,7000);
+        timer.schedule(hideGold, 7000);
     }
 
-    private void StartRepeatedGoldTimer(){ //  this method is called whenever repeatRandomObjects() is called and when the timer task finish
+    private void StartRepeatedGoldTimer() { //  this method is called whenever repeatRandomObjects() is called and when the timer task finish
         TimerTask hideGold = new TimerTask() { //  repeatRandomObjects() will be called again to insure the infinite loop
 
             @Override
@@ -379,10 +364,10 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         };
 
         Timer timer = new Timer();
-        timer.schedule(hideGold,5000);
+        timer.schedule(hideGold, 5000);
     }
 
-    private void StartRepeatedMushroomTimer(){ //  this method is called whenever repeatRandomObjects() is called and when the timer task finish
+    private void StartRepeatedMushroomTimer() { //  this method is called whenever repeatRandomObjects() is called and when the timer task finish
         TimerTask hideMushroom = new TimerTask() {//  repeatRandomObjects() will be called again to insure the infinite loop
 
             @Override
@@ -393,7 +378,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         };
 
         Timer timer = new Timer();
-        timer.schedule(hideMushroom,7000);
+        timer.schedule(hideMushroom, 7000);
     }
 
     private void hideGold() {
@@ -426,11 +411,11 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         board[x][y].setIcon(getIcon(currentPlayer.getName()));
         board[x][y].setEnabled(true);
         for (Enemy enemy : enemies) {
-           int enemyX= enemy.getLocation().getX();
-           int enemyY= enemy.getLocation().getY();
-           Tile enemyTile = board[enemyX][enemyY];
-           enemyTile.setIcon(getIcon(enemy.getName()));
-           enemyTile.setEnabled(true);
+            int enemyX = enemy.getLocation().getX();
+            int enemyY = enemy.getLocation().getY();
+            Tile enemyTile = board[enemyX][enemyY];
+            enemyTile.setIcon(getIcon(enemy.getName()));
+            enemyTile.setEnabled(true);
         }
     }
 
@@ -438,14 +423,15 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         int steps = currentPlayer.getSteps();
         int movedSteps = 0;
         Tile nextTile, currentTile;
-        int x = currentPlayer.getLocation().getX();
-        int y = currentPlayer.getLocation().getY();
-        while (movedSteps < steps && !board[x - steps][y].isWall()) {
-            x = currentPlayer.getLocation().getX();
-            y = currentPlayer.getLocation().getY();
+//        int x = currentPlayer.getLocation().getX();
+//        int y = currentPlayer.getLocation().getY();
+        //        while (movedSteps < steps && !board[x - steps][y].isWall()) {
+        while (movedSteps < steps) {
+            int x = currentPlayer.getLocation().getX();
+            int y = currentPlayer.getLocation().getY();
             currentTile = board[x][y];
             nextTile = board[x - 1][y];
-            if (!nextTile.isWall()) {
+            if (nextTile.isNotWall()) {
                 currentTile.setIcon(null);
                 currentTile.setEnabled(false);
                 nextTile.setIcon(getIcon(currentPlayer.getName()));
@@ -463,14 +449,15 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         int steps = currentPlayer.getSteps();
         int movedSteps = 0;
         Tile nextTile, currentTile;
-        int x = currentPlayer.getLocation().getX();
-        int y = currentPlayer.getLocation().getY();
-        while (movedSteps < steps && !board[x + steps][y].isWall()) {
-            x = currentPlayer.getLocation().getX();
-            y = currentPlayer.getLocation().getY();
+//        int x = currentPlayer.getLocation().getX();
+//        int y = currentPlayer.getLocation().getY();
+        //        while (movedSteps < steps && !board[x + steps][y].isWall()) {
+        while (movedSteps < steps) {
+            int x = currentPlayer.getLocation().getX();
+            int y = currentPlayer.getLocation().getY();
             currentTile = board[x][y];
             nextTile = board[x + 1][y];
-            if (!nextTile.isWall()) {
+            if (nextTile.isNotWall()) {
                 currentTile.setIcon(null);
                 currentTile.setEnabled(false);
                 nextTile.setIcon(getIcon(currentPlayer.getName()));
@@ -487,14 +474,15 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         int steps = currentPlayer.getSteps();
         int movedSteps = 0;
         Tile nextTile, currentTile;
-        int x = currentPlayer.getLocation().getX();
-        int y = currentPlayer.getLocation().getY();
-        while (movedSteps < steps && !board[x][y + steps].isWall()) {
-            x = currentPlayer.getLocation().getX();
-            y = currentPlayer.getLocation().getY();
+//        int x = currentPlayer.getLocation().getX();
+//        int y = currentPlayer.getLocation().getY();
+        //        while (movedSteps < steps && !board[x][y + steps].isWall()) {
+        while (movedSteps < steps) {
+            int x = currentPlayer.getLocation().getX();
+            int y = currentPlayer.getLocation().getY();
             currentTile = board[x][y];
             nextTile = board[x][y + 1];
-            if (!nextTile.isWall()) {
+            if (nextTile.isNotWall()) {
                 currentTile.setIcon(null);
                 currentTile.setEnabled(false);
                 nextTile.setIcon(getIcon(currentPlayer.getName()));
@@ -511,14 +499,15 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         int steps = currentPlayer.getSteps();
         int movedSteps = 0;
         Tile nextTile, currentTile;
-        int x = currentPlayer.getLocation().getX();
-        int y = currentPlayer.getLocation().getY();
-        while (movedSteps < steps && !board[x][y - steps].isWall()) {
-            x = currentPlayer.getLocation().getX();
-            y = currentPlayer.getLocation().getY();
+//        int x = currentPlayer.getLocation().getX();
+//        int y = currentPlayer.getLocation().getY();
+        //         while (movedSteps < steps && !board[x][y - steps].isWall()) {
+        while (movedSteps < steps) {
+            int x = currentPlayer.getLocation().getX();
+            int y = currentPlayer.getLocation().getY();
             currentTile = board[x][y];
             nextTile = board[x][y - 1];
-            if (!nextTile.isWall()) {
+            if (nextTile.isNotWall()) {
                 currentTile.setIcon(null);
                 currentTile.setEnabled(false);
                 nextTile.setIcon(getIcon(currentPlayer.getName()));
@@ -532,18 +521,16 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     }
 
     private void showShortestPath() {
-        for (Enemy enemy: enemies) {
+        for (Enemy enemy : enemies) {
             enemy.setShortestPath(this, currentPlayer.getLocation());
         }
     }
 
-    private void moveEnemy(String direction, Enemy enemy) {
+    private void moveEnemy(Enemy enemy) {
         int steps = enemy.getSteps();
 
         int movedSteps = 0;
-        // FIXME: nullpointerexception when no gap between enemy and player,
-        //  and player moves to enemy
-        if (checkForEnemyCatch(direction, enemy)) {
+        if (checkForEnemyCatch(enemy)) {
             return;
         }
 
@@ -566,19 +553,12 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             currentTile.setBackground(Color.white);
             destination.setIcon(getIcon(enemy.getName()));
             destination.setEnabled(true);
-            if (checkForEnemyCatch(direction, enemy)) {
+            if (checkForEnemyCatch(enemy)) {
                 return;
             }
         }
     }
 
-    private void refresh(Character character) {
-        if (character.getShortestPath() != null) {
-            for (Tile tile: character.getShortestPath()) {
-                tile.setBackground(Color.white);
-            }
-        }
-    }
     private void movePlayer(String direction) {
         switch (direction) {
             case "up":
@@ -594,17 +574,36 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 movePlayerRight();
         }
     }
-    private void gameLoop(String direction)  {
-        movePlayer(direction);
-        for (Enemy enemy : enemies) {
-            // FIXME: Empty loop
-            refresh(enemy);
-            moveEnemy(direction, enemy);
+
+    private void cleanupTiles() {
+        for (Tile[] row : board) {
+            for (Tile tile : row) {
+                if (tile.getPaths() > 0) {
+                    tile.setBackground(Color.white);
+                    tile.setPaths(0);
+                }
+            }
         }
-        updatePoints();
     }
 
-    private void updatePoints()   {
+    private void gameLoop(String direction) {
+        cleanupTiles();
+        movePlayer(direction);
+        for (Enemy enemy : enemies) {
+            moveEnemy(enemy);
+        }
+        updatePoints();
+        checkPoints();
+    }
+
+    private void checkPoints() {
+        if (points <= 0) {
+            // TODO: end game with game over popup
+            //  And remove keylisteners
+        }
+    }
+
+    private void updatePoints() {
         didCatchObject(); // checks if the player is standing at an object's tile.
     }
 
@@ -619,11 +618,11 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             int tileIndex = objectTiles.indexOf(currentTile);
             int addedPoints = objectTypes.get(tileIndex).getPoints();
             points = points + addedPoints;
-            pointLabels.get(1).setText(Integer.toString(points)); // updating points on the GUI
+            pointLabels.get(1).setText(points.toString()); // updating points on the GUI
         }
     }
 
-    private boolean checkForEnemyCatch(String direction, Enemy enemy)   {
+    private boolean checkForEnemyCatch(Enemy enemy) {
         int x = currentPlayer.getLocation().getX();
         int y = currentPlayer.getLocation().getY();
         Tile playerTile = board[x][y];
@@ -640,15 +639,12 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         return false;
     }
 
-    private void reInstantiate(Enemy enemy){
-        int enemyX = enemy.getLocation().getX();
-        int enemyY = enemy.getLocation().getY();
-        int enemyDoorIndex = enemyData.indexOf(enemy.getName())+1; // every door is stored after it's enemy's name
-        reInstantiateEnemyAtDoor(enemy,enemyData.get(enemyDoorIndex));
+    private void reInstantiate(Enemy enemy) {
+        reInstantiateEnemyAtDoor(enemy);
 
 
-        int x =currentPlayer.getLocation().getX();
-        int y =currentPlayer.getLocation().getY();
+        int x = currentPlayer.getLocation().getX();
+        int y = currentPlayer.getLocation().getY();
         Tile currentPlayerTile = board[x][y];
         currentPlayerTile.setBackground(Color.white);
         currentPlayerTile.setIcon(getIcon(currentPlayer.getName()));
@@ -657,55 +653,34 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
     }
 
-    private void reInstantiateEnemyAtDoor(Enemy enemy , String door){
-        switch (door) {
-            case "A":
-                board[0][3].setEnabled(true);
-                board[0][3].setBackground(Color.white);
-                board[0][3].setIcon(getIcon(enemy.getName()));
-                enemy.setLocation(new Location(0,3));
-                break;
-            case "B":
-                board[0][10].setEnabled(true);
-                board[0][10].setBackground(Color.white);
-                board[0][10].setIcon(getIcon(enemy.getName()));
-                enemy.setLocation(new Location(0,10));
-                break;
-            case "C":
-                board[5][0].setEnabled(true);
-                board[5][0].setBackground(Color.white);
-                board[5][0].setIcon(getIcon(enemy.getName()));
-                enemy.setLocation(new Location(5,0));
-                break;
-            case "D":
-                board[10][3].setEnabled(true);
-                board[10][3].setBackground(Color.white);
-                board[10][3].setIcon(getIcon(enemy.getName()));
-                enemy.setLocation(new Location(10,3));
-                break;
-        }
+    private void reInstantiateEnemyAtDoor(Enemy enemy) {
 
+        Tile tile = enemy.getDoor();
+        tile.setEnabled(true);
+        tile.setBackground(Color.white);
+        tile.setIcon(getIcon(enemy.getName()));
+        enemy.setLocation(tile.getTileLocation());
     }
 
-    private void checkGameLoop(String direction){
+    private void checkGameLoop(String direction) {
         boolean run = false;
-        switch (direction){
-            case "up" :
-                Tile upperTile = board[currentPlayer.getLocation().getX()-1][currentPlayer.getLocation().getY()];
-                run = !upperTile.isWall();
+        switch (direction) {
+            case "up":
+                Tile upperTile = board[currentPlayer.getLocation().getX() - 1][currentPlayer.getLocation().getY()];
+                run = upperTile.isNotWall();
                 break;
 
-            case "down" :
-                Tile lowerTile = board[currentPlayer.getLocation().getX()+1][currentPlayer.getLocation().getY()];
-                run = !lowerTile.isWall();
+            case "down":
+                Tile lowerTile = board[currentPlayer.getLocation().getX() + 1][currentPlayer.getLocation().getY()];
+                run = lowerTile.isNotWall();
                 break;
-            case "left" :
-                Tile leftTile = board[currentPlayer.getLocation().getX()][currentPlayer.getLocation().getY()-1];
-                run = !leftTile.isWall();
+            case "left":
+                Tile leftTile = board[currentPlayer.getLocation().getX()][currentPlayer.getLocation().getY() - 1];
+                run = leftTile.isNotWall();
                 break;
             case "right":
-                Tile rightTile = board[currentPlayer.getLocation().getX()][currentPlayer.getLocation().getY()+1];
-                run = !rightTile.isWall();
+                Tile rightTile = board[currentPlayer.getLocation().getX()][currentPlayer.getLocation().getY() + 1];
+                run = rightTile.isNotWall();
         }
         if (run) {
             gameLoop(direction);
@@ -732,14 +707,13 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 new Location(1, 0)
         };
         ArrayList<Tile> neighborTiles = new ArrayList<>();
-        for (Location location: neighborsLocations) {
+        for (Location location : neighborsLocations) {
             try {
                 Tile neighborTile = getTile(tile.getTileLocation().plus(location));
-                if (!neighborTile.isWall()) {
+                if (neighborTile.isNotWall()) {
                     neighborTiles.add(neighborTile);
                 }
-            }
-            catch (ArrayIndexOutOfBoundsException ignored) {
+            } catch (ArrayIndexOutOfBoundsException ignored) {
             }
         }
         return neighborTiles;
