@@ -22,6 +22,7 @@ public class GameBoardPanel extends JPanel {
     private final ArrayList<Enemy> enemies = new ArrayList<>();
     private final ArrayList<JLabel> pointLabels = new ArrayList<>();
     private Player currentPlayer;
+    private KeyListener keyListener = new KeyListener();
 
     public GameBoardPanel(Player playerCharacter) throws FileNotFoundException {
         initialize(playerCharacter);
@@ -30,7 +31,7 @@ public class GameBoardPanel extends JPanel {
 
     private void initialize(Player playerCharacter) throws FileNotFoundException {
         this.setFocusable(true);
-        this.addKeyListener(new MyKeyAdapter());
+        this.addKeyListener(keyListener);
         populateBoard();
         addPointsLabel();
         instantiate(playerCharacter, parseMap());
@@ -730,7 +731,7 @@ public class GameBoardPanel extends JPanel {
     }
 
 
-    public class MyKeyAdapter extends KeyAdapter {
+    public class KeyListener extends KeyAdapter {
 
         @Override
         public void keyPressed(KeyEvent e) {
