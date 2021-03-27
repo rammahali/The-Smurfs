@@ -418,6 +418,12 @@ public class GameBoardPanel extends JPanel {
             enemyTile.setEnabled(true);
         }
     }
+    private void takeGoldOrMushroom(Tile nextTile){
+        if(nextTile.HasGold())
+            nextTile.setHasGold(false);
+        if(nextTile.HasMushroom())
+            nextTile.setHasMushroom(false);
+    }
 
     private void movePlayerUp() {
         int steps = currentPlayer.getSteps();
@@ -437,6 +443,7 @@ public class GameBoardPanel extends JPanel {
                 nextTile.setIcon(getIcon(currentPlayer.getName()));
                 nextTile.setEnabled(true);
                 currentPlayer.getLocation().setX(x - 1);
+                takeGoldOrMushroom(nextTile); // gold or mushroom will not exist after the player takes them
                 movedSteps++;
 
 
@@ -463,6 +470,7 @@ public class GameBoardPanel extends JPanel {
                 nextTile.setIcon(getIcon(currentPlayer.getName()));
                 nextTile.setEnabled(true);
                 currentPlayer.getLocation().setX(x + 1);
+                takeGoldOrMushroom(nextTile); // gold or mushroom will not exist after the player takes them
                 movedSteps++;
             } else
                 break;
@@ -488,6 +496,7 @@ public class GameBoardPanel extends JPanel {
                 nextTile.setIcon(getIcon(currentPlayer.getName()));
                 nextTile.setEnabled(true);
                 currentPlayer.getLocation().setY(y + 1);
+                takeGoldOrMushroom(nextTile); // gold or mushroom will not exist after the player takes them
                 movedSteps++;
 
             } else
@@ -513,6 +522,7 @@ public class GameBoardPanel extends JPanel {
                 nextTile.setIcon(getIcon(currentPlayer.getName()));
                 nextTile.setEnabled(true);
                 currentPlayer.getLocation().setY(y - 1);
+                takeGoldOrMushroom(nextTile); // gold or mushroom will not exist after the player takes them
                 movedSteps++;
 
             } else
