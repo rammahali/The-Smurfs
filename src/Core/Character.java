@@ -14,6 +14,7 @@ public abstract class Character {
     private String type;
     private int steps;
     private Location location;
+    private ArrayList<Tile> shortestPath;
 
     public Character() {
     }
@@ -58,7 +59,7 @@ public abstract class Character {
         this.location = location;
     }
 
-    public ArrayList<Tile> getShortestPath(GameBoardPanel boardPanel, Location destination) {
+    public void setShortestPath(GameBoardPanel boardPanel, Location destination) {
         // Retrieve start and end tiles
         Tile start = boardPanel.getTile(this.location);
         Tile end = boardPanel.getTile(destination);
@@ -119,9 +120,11 @@ public abstract class Character {
                 break;
             }
         }
+        this.shortestPath = shortestPath;
+    }
 
+    public ArrayList<Tile> getShortestPath() {
         return shortestPath;
-
     }
 }
 
