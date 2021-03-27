@@ -1,13 +1,11 @@
-Karakter:Gargamel,Kapi:C
-Karakter:Azman,Kapi:D
-Karakter:Azman,Kapi:A
-Karakter:Gargamel,Kapi:B
+Karakter:Gargamel,Kapi:A
+Karakter:Azman,Kapi:B
 0	0	0	1	0	0	0	0	0	0	1	0	0
-0	1	1	1	1	1	1	1	1	1	1	1	0
-0	1	1	1	1	1	1	1	1	0	0	1	0
-0	1	1	1	1	1	1	0	1	1	0	1	0
-0	1	0	1	0	0	0	0	1	0	0	1	0
-1	1	0	1	1	0	1	0	1	0	1	1	0
+0	1	1	1	1	0	1	1	1	1	1	1	0
+0	1	0	1	1	1	1	1	1	0	0	1	0
+0	1	1	1	1	0	1	0	1	1	0	1	0
+0	1	0	1	0	0	1	0	1	0	0	1	0
+1	1	0	1	1	1	1	0	1	0	1	1	0
 0	1	0	0	1	1	1	0	1	1	1	1	0
 0	1	0	1	1	1	1	1	1	1	1	1	1
 0	1	0	1	0	0	0	0	0	1	1	1	0
