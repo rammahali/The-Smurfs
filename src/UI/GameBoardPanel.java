@@ -610,11 +610,17 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         cleanupTiles();
         movePlayer(direction);
         for (Enemy enemy : enemies) {
-            // FIXME: Empty loop
-//            refresh(enemy);
             moveEnemy(direction, enemy);
         }
         updatePoints();
+        checkPoints();
+    }
+
+    private void checkPoints() {
+        if (points <= 0) {
+            // TODO: end game with game over popup
+            //  And remove keylisteners
+        }
     }
 
     private void updatePoints()   {
@@ -632,7 +638,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             int tileIndex = objectTiles.indexOf(currentTile);
             int addedPoints = objectTypes.get(tileIndex).getPoints();
             points = points + addedPoints;
-            pointLabels.get(1).setText(Integer.toString(points)); // updating points on the GUI
+            pointLabels.get(1).setText(points.toString()); // updating points on the GUI
         }
     }
 

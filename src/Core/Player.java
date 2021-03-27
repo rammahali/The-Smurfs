@@ -1,6 +1,8 @@
 package Core;
 
 public abstract class Player extends Character {
-  Player(){}
+    Player(String name, int steps) {
+        super(name, "Player", steps);
+    }
 }
 

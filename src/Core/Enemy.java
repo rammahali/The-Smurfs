@@ -21,13 +21,11 @@ public abstract class Enemy extends Character {
     }
 
     public Enemy() {
-        this.setType("Enemy");
+        super();
     }
 
     public Enemy(String name, int steps, int hitPoints, Tile door) {
-        this.setType("Enemy");
-        setName(name);
-        setSteps(steps);
+        super(name, "Enemy", steps);
         setHitPoints(hitPoints);
         setDoor(door);
     }

@@ -14,8 +14,18 @@ public abstract class Character {
     private int steps;
     private Location location;
     private ArrayList<Tile> shortestPath;
+    static int totalCharacters = 0;
 
     public Character() {
+        id = totalCharacters;
+        totalCharacters++;
+    }
+    public Character(String name, String type, int steps) {
+        setName(name);
+        setType(type);
+        setSteps(steps);
+        id = totalCharacters;
+        totalCharacters++;
     }
 
     public int getId() {
