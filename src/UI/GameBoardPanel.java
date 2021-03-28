@@ -609,8 +609,9 @@ public class GameBoardPanel extends JPanel {
 
     private void checkPoints() {
         if (points <= 0) {
-            // TODO: end game with game over popup
-            //  And remove keylisteners
+            this.removeKeyListener(keyListener);// stops the users from moving
+            SwingUtilities.getWindowAncestor(this).dispose();
+            new GameOver().setVisible(true);
         }
     }
 
