@@ -219,7 +219,8 @@ public class GameBoardPanel extends JPanel {
         board[10][3].setText("D");
         board[10][3].setBackground(Color.DARK_GRAY);
         board[10][3].setIsWall(true);
-
+        board[7][12].setIcon(getIcon("princess"));
+        board[7][12].setEnabled(true);
         return enemyData;
     }
 
@@ -247,7 +248,7 @@ public class GameBoardPanel extends JPanel {
             x = random.nextInt(11);
             y = random.nextInt(13);
 
-            if (board[x][y].isNotWall() && !objectTiles.contains(board[x][y]) && board[x][y] != playerTile) {
+            if (board[x][y].isNotWall() && !objectTiles.contains(board[x][y]) && board[x][y] != playerTile &&board[x][y]!=board[7][12]) {
                 board[x][y].setHasGold(true);
                 board[x][y].setIcon(getIcon("gold"));
                 board[x][y].setEnabled(true);
@@ -273,7 +274,7 @@ public class GameBoardPanel extends JPanel {
             x = random.nextInt(11);
             y = random.nextInt(13);
 
-            if (board[x][y].isNotWall() && !objectTiles.contains(board[x][y]) && board[x][y] != playerTile) {
+            if (board[x][y].isNotWall() && !objectTiles.contains(board[x][y]) && board[x][y] != playerTile &&board[x][y]!=board[7][12]) {
                 board[x][y].setHasMushroom(true);
                 board[x][y].setIcon(getIcon("mushroom"));
                 board[x][y].setEnabled(true);
@@ -445,6 +446,7 @@ public class GameBoardPanel extends JPanel {
                 nextTile.setEnabled(true);
                 currentPlayer.getLocation().setX(x - 1);
                 takeGoldOrMushroom(nextTile); // gold or mushroom will not exist after the player takes them
+                checkForWin(nextTile);
                 movedSteps++;
 
 
@@ -472,6 +474,7 @@ public class GameBoardPanel extends JPanel {
                 nextTile.setEnabled(true);
                 currentPlayer.getLocation().setX(x + 1);
                 takeGoldOrMushroom(nextTile); // gold or mushroom will not exist after the player takes them
+                checkForWin(nextTile);
                 movedSteps++;
             } else
                 break;
@@ -498,6 +501,7 @@ public class GameBoardPanel extends JPanel {
                 nextTile.setEnabled(true);
                 currentPlayer.getLocation().setY(y + 1);
                 takeGoldOrMushroom(nextTile); // gold or mushroom will not exist after the player takes them
+                checkForWin(nextTile);
                 movedSteps++;
 
             } else
@@ -524,6 +528,7 @@ public class GameBoardPanel extends JPanel {
                 nextTile.setEnabled(true);
                 currentPlayer.getLocation().setY(y - 1);
                 takeGoldOrMushroom(nextTile); // gold or mushroom will not exist after the player takes them
+                checkForWin(nextTile);
                 movedSteps++;
 
             } else
@@ -611,7 +616,19 @@ public class GameBoardPanel extends JPanel {
         if (points <= 0) {
             this.removeKeyListener(keyListener);// stops the users from moving
             SwingUtilities.getWindowAncestor(this).dispose();
-            new GameOver().setVisible(true);
+            GameOver gameOver = new GameOver();
+            gameOver.setVisible(true);
+            gameOver.gameOverLabel.setText("Game Over ! , you lost (points :"+points.toString()+")");
+        }
+    }
+
+    private void checkForWin(Tile playerTile){
+        if(playerTile==board[7][12]){
+            GameOver gameOver = new GameOver();
+            gameOver.gameOverLabel.setText("Game over , you won the game !");
+            SwingUtilities.getWindowAncestor(this).dispose();
+            gameOver.setVisible(true);
+
         }
     }
 

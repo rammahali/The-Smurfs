@@ -13,7 +13,7 @@ public class GameOver extends javax.swing.JFrame {
         javax.swing.JButton playAgain1 = new javax.swing.JButton();
         // Variables declaration - do not modify
         javax.swing.JButton exit = new javax.swing.JButton();
-        javax.swing.JLabel gameOverLabel = new javax.swing.JLabel();
+        gameOverLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -27,7 +27,7 @@ public class GameOver extends javax.swing.JFrame {
         exit.setText("Exit");
         exit.addActionListener(this::ExitActionPerformed);
 
-        gameOverLabel.setFont(new java.awt.Font("Tahoma", Font.PLAIN, 30)); // NOI18N
+        gameOverLabel.setFont(new java.awt.Font("Tahoma", Font.PLAIN, 18)); // NOI18N
         gameOverLabel.setForeground(new java.awt.Color(255, 255, 255));
         gameOverLabel.setText("Game over !");
 
@@ -83,5 +83,6 @@ public class GameOver extends javax.swing.JFrame {
         this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
     }
 
+    public javax.swing.JLabel gameOverLabel;
 
 }
