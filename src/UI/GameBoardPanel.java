@@ -12,7 +12,6 @@ import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.Timer;
 
-// TODO: add gameover popup
 
 public class GameBoardPanel extends JPanel {
     private Tile[][] board = new Tile[11][13];
