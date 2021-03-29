@@ -17,12 +17,12 @@ import java.util.Timer;
 public class GameBoardPanel extends JPanel {
     private Tile[][] board = new Tile[11][13];
     private Integer points = 20;
-    private final ArrayList<Tile> objectTiles = new ArrayList<>();
-    private final ArrayList<Object> objectTypes = new ArrayList<>();
     private final ArrayList<Enemy> enemies = new ArrayList<>();
     private final ArrayList<JLabel> pointLabels = new ArrayList<>();
     private Player currentPlayer;
     private KeyListener keyListener = new KeyListener();
+    private final ArrayList<Tile> goldTiles = new ArrayList<>();
+    private final ArrayList<Tile> mushroomTiles = new ArrayList<>();
 
     public GameBoardPanel(Player playerCharacter) throws FileNotFoundException {
         initialize(playerCharacter);
@@ -231,10 +231,8 @@ public class GameBoardPanel extends JPanel {
 
 
     private void instantiateRandomObjects() {
-        showRandomGold();
-        showRandomMushroom();
-        StartInitialGoldTimer();
-        StartInitialMushroomTimer();
+       repeatGoldTask();
+       repeatMushroomTask();
     }
 
     private void showRandomGold() {
@@ -248,12 +246,12 @@ public class GameBoardPanel extends JPanel {
             x = random.nextInt(11);
             y = random.nextInt(13);
 
-            if (board[x][y].isNotWall() && !objectTiles.contains(board[x][y]) && board[x][y] != playerTile &&board[x][y]!=board[7][12]) {
+            if (board[x][y].isNotWall() && !goldTiles.contains(board[x][y])&& !mushroomTiles.contains(board[x][y]) && board[x][y] != playerTile && board[x][y] != board[7][12]) {
                 board[x][y].setHasGold(true);
                 board[x][y].setIcon(getIcon("gold"));
                 board[x][y].setEnabled(true);
-                objectTiles.add(board[x][y]);
-                objectTypes.add(new Gold());
+               // objectTiles.add(board[x][y]);
+                 goldTiles.add(board[x][y]);
                 drawnGold++;
             }
         }
@@ -274,134 +272,140 @@ public class GameBoardPanel extends JPanel {
             x = random.nextInt(11);
             y = random.nextInt(13);
 
-            if (board[x][y].isNotWall() && !objectTiles.contains(board[x][y]) && board[x][y] != playerTile &&board[x][y]!=board[7][12]) {
+            if (board[x][y].isNotWall() && !goldTiles.contains(board[x][y])&& !mushroomTiles.contains(board[x][y]) && board[x][y] != playerTile && board[x][y] != board[7][12]) {
                 board[x][y].setHasMushroom(true);
                 board[x][y].setIcon(getIcon("mushroom"));
                 board[x][y].setEnabled(true);
-                objectTiles.add(board[x][y]);
-                objectTypes.add(new Mushroom());
+                mushroomTiles.add(board[x][y]);
                 drawnMushroom++;
             }
         }
         rePaint();
     }
 
-    private void repeatRandomObjects() {
+
+    private void repeatGoldTask() { // insures gold is showing all the game in different time periods.
         Random random = new Random();
-        int randomInt = random.nextInt(2); // helper random number to show gold or mushroom.
-        switch (randomInt) {
-            case 1: // will show random gold
-                int goldDelay = random.nextInt(10); // after x seconds (0-10)
-                while (goldDelay == 0) {
-                    goldDelay = random.nextInt(10);
-                }
-                TimerTask showGold = new TimerTask() {
 
-                    @Override
-                    public void run() {
-                        showRandomGold();
-                        StartRepeatedGoldTimer(); // when gold timer finish executing repeatRandomObjects() will be recalled  withing gold timer task for infinite loop
-                    }
-                };
-
-                Timer goldTimer = new Timer();
-                goldTimer.schedule(showGold, goldDelay * 1000);
-                break;
-            case 0: // shows random mushroom
-                int mushroomDelay = random.nextInt(20); // after x seconds (1-20)
-                while (mushroomDelay == 0) {
-                    mushroomDelay = random.nextInt(20);
-                }
-
-                TimerTask showMushroom = new TimerTask() {
-
-                    @Override
-                    public void run() {
-                        showRandomMushroom();
-                        StartRepeatedMushroomTimer(); // when mushroom timer finish executing repeatRandomObjects() will be recalled  withing gold timer task for infinite loop
-                    }
-                };
-
-                Timer mushroomTimer = new Timer();
-                mushroomTimer.schedule(showMushroom, mushroomDelay * 1000);
+        int goldDelay = random.nextInt(10); // after x seconds (0-10)
+        while (goldDelay == 0) {
+            goldDelay = random.nextInt(10); // making sure gold re show time will never be 0.
         }
-    }
-
-
-    private void StartInitialGoldTimer() { // this method will only be called once (when the game starts)
-        TimerTask hideGold = new TimerTask() {
+        TimerTask showGold = new TimerTask() {
 
             @Override
             public void run() {
-                hideGold();
+                showRandomGold();
+                StartRepeatedGoldTimer(); // a timer thats hide gold after it's period reach the limit and then it will recall this method , to restart the loop.
+            }
+        };
+
+        Timer goldTimer = new Timer();
+        goldTimer.schedule(showGold, goldDelay * 1000);
+    }
+
+
+
+    private void repeatMushroomTask(){ // insures mushroom is showing all the game in different time periods.
+        Random random = new Random();
+        int mushroomDelay = random.nextInt(20); // after x seconds (1-20)
+        while (mushroomDelay == 0) {
+            mushroomDelay = random.nextInt(20); // making sure mushroom re show time will never be 0.
+        }
+
+        TimerTask showMushroom = new TimerTask() {
+
+            @Override
+            public void run() {
+                showRandomMushroom();
+                StartRepeatedMushroomTimer(); // a timer thats hide gold after it's period reach the limit and then it will recall this method , to restart the loop.
+            }
+        };
+
+        Timer mushroomTimer = new Timer();
+        mushroomTimer.schedule(showMushroom, mushroomDelay * 1000);
+    }
+
+
+    private void StartRepeatedGoldTimer() { //  this method is called whenever repeatGoldTask() is called and when the timer task finish
+        TimerTask hideGold = new TimerTask() {  // a task to hide the gold.
+
+            @Override
+            public void run() {
+                hideGold(); // only when the timer finish gold will be hidden
             }
         };
 
         Timer timer = new Timer();
         timer.schedule(hideGold, 5000);
-    }
 
-    private void StartInitialMushroomTimer() { // this method will only be called once (when the game starts)
-        TimerTask hideGold = new TimerTask() {
+
+        TimerTask startRepeatedGoldTask = new TimerTask() { // a task to  repeat showing the gold.
 
             @Override
             public void run() {
-                hideMushroom();
-                repeatRandomObjects(); // but it will trigger repeatRandomObjects()
+                repeatGoldTask(); // this will only be called after the timer below reach the limit
             }
         };
 
-        Timer timer = new Timer();
-        timer.schedule(hideGold, 7000);
+        Timer repeat = new Timer();
+        repeat.schedule(startRepeatedGoldTask, 6000); // repeat showing the gold after 1 second later from hiding the gold
+                                                           // to insure no error will accrue.
     }
 
-    private void StartRepeatedGoldTimer() { //  this method is called whenever repeatRandomObjects() is called and when the timer task finish
-        TimerTask hideGold = new TimerTask() { //  repeatRandomObjects() will be called again to insure the infinite loop
+    private void StartRepeatedMushroomTimer() {  //  this method is called whenever repeatMushroomTask() is called and when the timer task finish
+        TimerTask hideMushroom = new TimerTask() { // a task to hide the mushroom.
 
             @Override
             public void run() {
-                hideGold();
-                repeatRandomObjects(); // the infinite loop happens here
-            }
-        };
-
-        Timer timer = new Timer();
-        timer.schedule(hideGold, 5000);
-    }
-
-    private void StartRepeatedMushroomTimer() { //  this method is called whenever repeatRandomObjects() is called and when the timer task finish
-        TimerTask hideMushroom = new TimerTask() {//  repeatRandomObjects() will be called again to insure the infinite loop
-
-            @Override
-            public void run() {
-                hideMushroom();
-                repeatRandomObjects(); // the infinite loop happens here
+                hideMushroom(); // only when the timer finish mushroom will be hidden
             }
         };
 
         Timer timer = new Timer();
         timer.schedule(hideMushroom, 7000);
+
+
+        TimerTask startRepeatMushroomTask = new TimerTask() { // a task to  repeat showing the mushroom.
+
+            @Override
+            public void run() {
+                repeatMushroomTask(); // this will only be called after the timer below reach the limit
+            }
+        };
+
+        Timer repeat = new Timer();
+        repeat.schedule(startRepeatMushroomTask, 8000); // repeat showing the mushroom after 1 second later from hiding the gold
+                                                                // to insure no error will accrue.
     }
 
     private void hideGold() {
-        for (Tile objectTile : objectTiles) {
+        for (Tile objectTile : goldTiles) {
             if (objectTile.HasGold()) {
                 objectTile.setHasGold(false);
                 objectTile.setEnabled(false);
                 objectTile.setIcon(null);
             }
         }
+        for(int i =0; i<goldTiles.size();i++){
+            goldTiles.remove(i);
+        }
+
         rePaint();
     }
 
     private void hideMushroom() {
-        for (Tile objectTile : objectTiles) {
+        for (Tile objectTile : mushroomTiles) {
             if (objectTile.HasMushroom()) {
                 objectTile.setHasMushroom(false);
                 objectTile.setEnabled(false);
                 objectTile.setIcon(null);
             }
         }
+        for(int i = 0; i< mushroomTiles.size(); i++){
+            mushroomTiles.remove(i);
+        }
+
         rePaint();
     }
 
@@ -420,10 +424,11 @@ public class GameBoardPanel extends JPanel {
             enemyTile.setEnabled(true);
         }
     }
-    private void takeGoldOrMushroom(Tile nextTile){
-        if(nextTile.HasGold())
+
+    private void takeGoldOrMushroom(Tile nextTile) {
+        if (nextTile.HasGold())
             nextTile.setHasGold(false);
-        if(nextTile.HasMushroom())
+        if (nextTile.HasMushroom())
             nextTile.setHasMushroom(false);
     }
 
@@ -606,7 +611,7 @@ public class GameBoardPanel extends JPanel {
         cleanupTiles();
         movePlayer(direction);
         for (Enemy enemy : enemies) {
-            moveEnemy(enemy);
+           moveEnemy(enemy);
         }
         updatePoints();
         checkPoints();
@@ -618,12 +623,12 @@ public class GameBoardPanel extends JPanel {
             SwingUtilities.getWindowAncestor(this).dispose();
             GameOver gameOver = new GameOver();
             gameOver.setVisible(true);
-            gameOver.gameOverLabel.setText("Game Over ! , you lost (points :"+points.toString()+")");
+            gameOver.gameOverLabel.setText("Game Over ! , you lost (points :" + points.toString() + ")");
         }
     }
 
-    private void checkForWin(Tile playerTile){
-        if(playerTile==board[7][12]){
+    private void checkForWin(Tile playerTile) {
+        if (playerTile == board[7][12]) {
             GameOver gameOver = new GameOver();
             gameOver.gameOverLabel.setText("Game over , you won the game !");
             SwingUtilities.getWindowAncestor(this).dispose();
@@ -641,13 +646,20 @@ public class GameBoardPanel extends JPanel {
         int y = currentPlayer.getLocation().getY();
         Tile currentTile = board[x][y];
 
-        if (currentTile.HasGold() || currentTile.HasMushroom()) {
-            // when new object is added the object's location is stored at objectTiles array , and it's type is stored at ObjectTypes array synchronously.
-            // so both arrayLists  will have the same index for each object.
-            int tileIndex = objectTiles.indexOf(currentTile);
-            int addedPoints = objectTypes.get(tileIndex).getPoints();
+        if(goldTiles.contains(currentTile)){
+            Gold gold = new Gold();
+            int addedPoints =gold.getPoints();
+            points=points+addedPoints;
+            pointLabels.get(1).setText(points.toString()); // updating points on the GUI
+            goldTiles.remove(currentTile);
+        }
+
+        if(mushroomTiles.contains(currentTile)){
+           Mushroom mushroom = new Mushroom();
+            int addedPoints = mushroom.getPoints();
             points = points + addedPoints;
             pointLabels.get(1).setText(points.toString()); // updating points on the GUI
+            mushroomTiles.remove(currentTile);
         }
     }
 
