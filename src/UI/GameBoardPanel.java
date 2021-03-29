@@ -1,7 +1,6 @@
 package UI;
 
 import Core.*;
-import Core.Object;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,7 +18,7 @@ public class GameBoardPanel extends JPanel {
     private final ArrayList<Enemy> enemies = new ArrayList<>();
     private final ArrayList<JLabel> pointLabels = new ArrayList<>();
     private Player currentPlayer;
-    private KeyListener keyListener = new KeyListener();
+    private final KeyListener keyListener = new KeyListener();
     private final ArrayList<Tile> goldTiles = new ArrayList<>();
     private final ArrayList<Tile> mushroomTiles = new ArrayList<>();
 
@@ -386,9 +385,7 @@ public class GameBoardPanel extends JPanel {
                 objectTile.setIcon(null);
             }
         }
-        for(int i =0; i<goldTiles.size();i++){
-            goldTiles.remove(i);
-        }
+        goldTiles.clear();
 
         rePaint();
     }
@@ -401,10 +398,8 @@ public class GameBoardPanel extends JPanel {
                 objectTile.setIcon(null);
             }
         }
-        for(int i = 0; i< mushroomTiles.size(); i++){
-            mushroomTiles.remove(i);
-        }
 
+        mushroomTiles.clear();
         rePaint();
     }
 
