@@ -148,7 +148,7 @@ public class GameBoardPanel extends JPanel {
             pointLabels.add(label);
             this.add(label);
         }
-        pointLabels.get(0).setText("Points: ");
+        pointLabels.get(0).setText("Points:");
         pointLabels.get(1).setText(this.points.toString()); // initial points value
     }
 
