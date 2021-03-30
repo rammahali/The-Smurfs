@@ -448,7 +448,7 @@ public class GameBoardPanel extends JPanel {
                 takeGoldOrMushroom(nextTile); // gold or mushroom will not exist after the player takes them
                 checkForWin(nextTile);
                 movedSteps++;
-
+                didCatchObject();
 
             } else
                 break;
@@ -476,6 +476,7 @@ public class GameBoardPanel extends JPanel {
                 takeGoldOrMushroom(nextTile); // gold or mushroom will not exist after the player takes them
                 checkForWin(nextTile);
                 movedSteps++;
+                didCatchObject();
             } else
                 break;
 
@@ -503,6 +504,7 @@ public class GameBoardPanel extends JPanel {
                 takeGoldOrMushroom(nextTile); // gold or mushroom will not exist after the player takes them
                 checkForWin(nextTile);
                 movedSteps++;
+                didCatchObject();
 
             } else
                 break;
@@ -530,6 +532,7 @@ public class GameBoardPanel extends JPanel {
                 takeGoldOrMushroom(nextTile); // gold or mushroom will not exist after the player takes them
                 checkForWin(nextTile);
                 movedSteps++;
+                didCatchObject();
 
             } else
                 break;
