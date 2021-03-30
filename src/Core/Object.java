@@ -1,8 +1,15 @@
+package Core;
+
 public abstract class Object {
     private String type;
     private int points;
 
     public Object() {}
+
+    public Object(String type, int points) {
+        setType(type);
+        setPoints(points);
+    }
 
     public String getType() {
         return type;
@@ -21,16 +28,4 @@ public abstract class Object {
     }
 }
 
-class Gold extends Object{
-    public Gold() {
-        this.setType("Gold");
-        this.setPoints(5);
-    }
-}
 
-class Mushroom extends Object{
-    public Mushroom() {
-        this.setType("Mushroom");
-        this.setPoints(20);
-    }
-}
