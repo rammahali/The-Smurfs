@@ -6,6 +6,7 @@ public class Tile extends JButton implements Comparable<Tile> {
     private boolean hasGold;
     private boolean hasMushroom;
     private boolean isWall;
+    private boolean hasEnemy;
     private int distance = -1; // ~= infinity
     private Tile previous;
     private Location tileLocation;
@@ -36,6 +37,13 @@ public class Tile extends JButton implements Comparable<Tile> {
 
     public void setIsWall(boolean wall) {
         isWall = wall;
+    }
+    public boolean HasEnemy() {
+        return hasEnemy;
+    }
+
+    public void setHasEnemy(boolean hasEnemy) {
+        this.hasEnemy = hasEnemy;
     }
 
     public int getDistance() {
