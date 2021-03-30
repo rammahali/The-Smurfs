@@ -17,14 +17,14 @@ public abstract class Character {
     private static int totalCharacters = 0;
 
     public Character() {
-        id = totalCharacters;
+        setId(totalCharacters);
         totalCharacters++;
     }
     public Character(String name, String type, int steps) {
         setName(name);
         setType(type);
         setSteps(steps);
-        id = totalCharacters;
+        setId(totalCharacters);
         totalCharacters++;
     }
 
