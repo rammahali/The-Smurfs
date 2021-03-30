@@ -244,7 +244,7 @@ public class GameBoardPanel extends JPanel {
             x = random.nextInt(11);
             y = random.nextInt(13);
 
-            if (!board[x][y].HasEnemy() &&board[x][y].isNotWall() && !goldTiles.contains(board[x][y])&& !goldTiles.contains(board[x][y]) && board[x][y] != playerTile && board[x][y] != board[7][12]) {
+            if (!board[x][y].HasEnemy() &&board[x][y].isNotWall() && !mushroomTiles.contains(board[x][y])&& !goldTiles.contains(board[x][y]) && board[x][y] != playerTile && board[x][y] != board[7][12]) {
                 board[x][y].setHasGold(true);
                 board[x][y].setIcon(getIcon("gold"));
                 board[x][y].setEnabled(true);
@@ -270,7 +270,7 @@ public class GameBoardPanel extends JPanel {
             x = random.nextInt(11);
             y = random.nextInt(13);
 
-            if (!board[x][y].HasEnemy() &&board[x][y].isNotWall() && !mushroomTiles.contains(board[x][y])&& !mushroomTiles.contains(board[x][y]) && board[x][y] != playerTile && board[x][y] != board[7][12]) {
+            if (!board[x][y].HasEnemy() &&board[x][y].isNotWall() && !goldTiles.contains(board[x][y])&& !mushroomTiles.contains(board[x][y]) && board[x][y] != playerTile && board[x][y] != board[7][12]) {
                 board[x][y].setHasMushroom(true);
                 board[x][y].setIcon(getIcon("mushroom"));
                 board[x][y].setEnabled(true);
