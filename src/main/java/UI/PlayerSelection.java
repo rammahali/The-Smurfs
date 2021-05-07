@@ -31,13 +31,13 @@ public class PlayerSelection extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(0, 102, 255));
 
-        jLabel2.setIcon(new javax.swing.ImageIcon("src/resources/logo.png")); // NOI18N
+        jLabel2.setIcon(new javax.swing.ImageIcon("src/main/resources/logo.png")); // NOI18N
 
         selectCharLable.setFont(new java.awt.Font("Arial", Font.PLAIN, 20)); // NOI18N
         selectCharLable.setForeground(new java.awt.Color(255, 255, 255));
         selectCharLable.setText("Select a character to start the game ");
 
-        jLabel3.setIcon(new javax.swing.ImageIcon("src/resources/smartSmurfStart.png")); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon("src/main/resources/smartSmurfStart.png")); // NOI18N
 
         smartSmurf.setBackground(new java.awt.Color(0, 102, 204));
         smartSmurf.setFont(new java.awt.Font("Tahoma", Font.PLAIN, 13)); // NOI18N

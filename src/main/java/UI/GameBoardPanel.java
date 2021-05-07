@@ -155,7 +155,7 @@ public class GameBoardPanel extends JPanel {
     private ArrayList<String> parseMap() throws FileNotFoundException {
 
         ArrayList<String> enemyData = new ArrayList<>();
-        File map = new File("src/resources/harita.txt");
+        File map = new File("src/main/resources/harita.txt");
         Scanner mapScanner = new Scanner(map);
         int i = 0;
         int j = 0;
@@ -224,7 +224,7 @@ public class GameBoardPanel extends JPanel {
 
     private ImageIcon getIcon(String iconName) {
 
-        return new ImageIcon(new ImageIcon("src/resources/" + iconName + ".png").getImage());
+        return new ImageIcon(new ImageIcon("src/main/resources/" + iconName + ".png").getImage());
     }
 
 
