@@ -14,8 +14,7 @@ COPY src ./src
 RUN mvn clean package
 
 # the second stage of our build will use open jdk 8 on alpine 3.9
-FROM openjdk:8
-
+FROM openjdk:8-jre
 # Install necessary dependencies
 RUN apt-get -y update
 RUN apt-get -y install libxrender1 libxtst6
