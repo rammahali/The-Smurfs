@@ -18,7 +18,7 @@ FROM openjdk:8
 
 # Install necessary dependencies
 RUN apt-get -y update
-RUN apt-get -y install libxrender1 libxtst6 libxi6
+RUN apt-get -y install libxrender1 libxtst6
 # copy only the artifacts we need from the first stage and discard the rest
 COPY --from=MAVEN_BUILD /target/The-Smurfs-1.0-SNAPSHOT.jar /the-smurfs.jar
 COPY --from=MAVEN_BUILD /src/main/resources /src/main/resources
