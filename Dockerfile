@@ -14,10 +14,12 @@ COPY src ./src
 RUN mvn clean package
 
 # the second stage of our build will use open jdk 8 on alpine 3.9
-FROM openjdk:8-jre
+FROM openjdk:8-jre-alpine3.9
 # Install necessary dependencies
-RUN apt-get -y update
-RUN apt-get -y install libxrender1 libxtst6
+RUN apk update
+RUN apk add libxrender libxtst
+RUN apk add --no-cache fontconfig ttf-dejavu
+RUN fc-cache -f && rm -rf /var/cache/*
 # copy only the artifacts we need from the first stage and discard the rest
 COPY --from=MAVEN_BUILD /target/The-Smurfs-1.0-SNAPSHOT.jar /the-smurfs.jar
 COPY --from=MAVEN_BUILD /src/main/resources /src/main/resources
