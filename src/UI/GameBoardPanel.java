@@ -204,6 +204,7 @@ public class GameBoardPanel extends JPanel {
             }
 
         }
+        mapScanner.close();
 
         board[0][3].setText("A");
         board[0][3].setBackground(Color.DARK_GRAY);
